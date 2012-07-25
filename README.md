@@ -14,6 +14,7 @@ problems (XSS and SQL).  To mitigate this you need to do three things
 
 This might look something like -
 
+```PHP
 	<?php
 	// Added safely, RSD 2012-07-25
 	require("/www/assets/safely-php/safely.php");
@@ -21,6 +22,7 @@ This might look something like -
 	$_POST = safePOST();
 	
 	// the rest of the old should now work safer.
+```
 
 # Using in new projects
 
