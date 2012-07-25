@@ -36,15 +36,24 @@ defined the validation map and then use it with your code.
 
 ```PHP
 	<?php
+	
+
+	// Just some place holder code to indicate that you've already established a MySQL connection
+	openMySQLConnection();
+
 	require("/www/assets/safely-php/safely.php");
+	
+	// Make a validation map
 	$validation_map = array(
 		"id" => "Integer",
 		"search" => "Text",
 		"callback" => "Varname"
 	);
 	
+	// extract the $_GET safely validated against $validation_map
 	$myGET = safeGET($validation_map);
 
+	// Now you're ready to use them.  If a field wasn't available it will be set to false
 	if ($myGET["id"] !== false) {
 		// build your query safely
 		$sql = "SELECT name, email FROM contacts WHERE id = " . 
@@ -53,13 +62,14 @@ defined the validation map and then use it with your code.
 		$sql = "SELECT name, email FROM contacts WHERE (name LIKE \"" . 
 			$myGET["search"] . "\" OR email LIKE \"" . $myGET["search"] . "\"";
 	}
-	
+
+	// Process your SQL safely
 	$qry = mysql_query($sql);
 	$users = mysql_fetch_assoc($qry);
 
-	if ($myGET["id"] !== false) {
+	if ($myGET["callback"] !== false) {
 		header("Content-Type: application/javascript");
-		echo renderAsJSONP($users, $callback);
+		echo $callback . '(' . json_encode($users,  true) . ')';
 	} else {
 		header("Content-Type: application/json");
 		echo json_encode($users, true);
