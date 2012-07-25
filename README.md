@@ -16,7 +16,7 @@ This might look something like -
 
 	<?php
 	// Added safely, RSD 2012-07-25
-	require("/www/assets/safely.php");
+	require("/www/assets/safely-php/safely.php");
 	$_GET = safeGET();
 	$_POST = safePOST();
 	
@@ -34,7 +34,7 @@ defined the validation map and then use it with your code.
 
 	```PHP
 	<?php
-	require("/www/assets/safely.php");
+	require("/www/assets/safely-php/safely.php");
 	$validation_map = array(
 		"id" => "Integer",
 		"search" => "Text",
