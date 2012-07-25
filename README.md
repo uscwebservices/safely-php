@@ -5,7 +5,8 @@ A library for more securely handling of GET/POST objects in PHP
 
 # Mockup of library idea
 
-    /**
+```JavaScript
+/**
  * safely.php - utility methods for improving code quality and 
  * safety in Web Services PHP based projects.
  *
@@ -81,3 +82,4 @@ function safeSERVER ($validation_map) {
 		$validation_map = makeValidationMap($_SERVER, true);
 	}
 }
+```
