@@ -32,7 +32,7 @@ In this example their are three supported parameters - id, search, callback
 which are an Integer, Text and Varname respectively. Here's how you would
 defined the validation map and then use it with your code.
 
-	```PHP
+```PHP
 	<?php
 	require("/www/assets/safely-php/safely.php");
 	$validation_map = array(
@@ -63,5 +63,5 @@ defined the validation map and then use it with your code.
 		echo json_encode($users, true);
 	}
 	?>
-	```
+```
 
