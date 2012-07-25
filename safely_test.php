@@ -4,6 +4,10 @@
  * against expected vunerabilities.
  */
 
+if (php_sapi_name() !== "cli") {
+	echo "Must be run from the command line." . PHP_EOL;
+	exit(1);
+}
 require('assert.php');
 $_POST = array();
 $_SERVER = array();
