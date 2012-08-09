@@ -87,6 +87,7 @@ function safeGET ($validation_map = NULL) {
 		$validation_map = makeValidationMap($_GET, true);
 	}
 	forEach($validation_map as $key => $format) {
+		$key = makeAs($key, "varname");
 		if (isset($_GET[$key])) {
 			$results[$key] = makeAs($_GET[$key], $format);
 		}
@@ -108,6 +109,7 @@ function safePOST ($validation_map = NULL) {
 		$validation_map = makeValidationMap($_POST, false);
 	}
 	forEach($validation_map as $key => $format) {
+		$key = makeAs($key, "varname");
 		if (isset($_POST[$key])) {
 			$results[$key] = makeAs($_POST[$key], $format);
 		}
@@ -129,6 +131,7 @@ function safeSERVER ($validation_map = NULL) {
 		$validation_map = makeValidationMap($_SERVER, false);
 	}
 	forEach($validation_map as $key => $format) {
+		$key = makeAs($key, "varname");
 		if (isset($_SERVER[$key])) {
 			$results[$key] = makeAs($_SERVER[$key], $format);
 		}
