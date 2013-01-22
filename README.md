@@ -1,7 +1,7 @@
 safely-php
 ==========
 
-A library for more securely handling of GET/POST objects in PHP
+A library for more securely handling of GET/POST objects in legacy PHP.
 
 # Retrofiting legacy PHP projects
 
