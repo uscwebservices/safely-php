@@ -1,9 +1,8 @@
 
-Web Council
-January 2013
+USC Web Council
+January 24, 2013
 R. S. Doiel, ITS Web Services
 http://github.com/uscwebservices
-
 
 <center>_SQL injection_</center>
 <center>__protecting legacy websites with safely-php__</center>
