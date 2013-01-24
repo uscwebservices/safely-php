@@ -1,33 +1,34 @@
-<center>USC Web Council</center>
-<center>January 24, 2013</center>
-<cetner>R. S. Doiel, ITS Web Services</center>
-<center>[http://github.com/uscwebservices/PRESENTATION.md]()</center>
 
-<center>_SQL injection_</center>
+Below is some background material I put together for a presentation. Your milleage may very.
+
+USC Web Council<br />
+January 24, 2013<br />
+R. S. Doiel, ITS Web Services<br />
+[http://github.com/uscwebservices/safely-php](http://github.com/uscwebservices/safely-php)
+
+
+<center>_SQL injection via PHP_</center>
 <center>__protecting legacy websites with safely-php__</center>
 
 
 # Part 1
-
-## Context
-
-* USC is increasing it focus on data security (it is not just the new fences and patrols)
-* USC is conducting audits for vulnerabilities including today's topic PHP, MySQL and SQL injection
-
+(context)
 
 ## My recent audit work
 
 * A number of sites have come up with problems recently
-* One common problem sticks out (doesn't let you off the hook for other ones)
+* One common problem sticks out - SQL injection via PHP
 * It is preventable
 * It is also fixable
-
 
 ## It is a big deal.
 
 * Risk of exposing contents of your database
 * Risk of exposing content of other databases
-* You can cost the University dollars, trust and excellence
+* Compromised data costs dollars, trust and time
+
+This lead to safely-php being written to make it easier to retrofit legacy PHP 
+with simple sanitization and validation functions.
 
 
 ## Today's talk
@@ -46,8 +47,8 @@
 
 ## When we're done
 
-* A basic idea of how to scan PHP files to look for problems
-* Have two techniques available to fixing things
+* A basic idea of how to scan a PHP file to find problems
+* Have an approach to fixing things
 * Understand how to put together a regularly repeatable plan to keep your site safe
 
 
@@ -56,20 +57,22 @@
 * To put what we're talking about into practice means looking at ALL your PHP code
 * Legacy sites tend to have lots of files (and lots of lines of code)
 * Legacy sites to have code repeated in lots of place (due to the practice of copy and modify)
+* Legacy tend to lack co-herency as things tend to grow organically after a certain point
 
 
 ## Some Good News
 
 * There is a simple approach to finding problems (follow the data)
 * With a little effort you can also avoid the problems
-* You can repeat this process regularly to limit your risk moving forward (it also gets easier as things get pruned, fixed or replaced)
+* You can repeat this process regularly to limit your risk moving forward 
+* It also gets easier as things get pruned, fixed or replaced at each iteration
 
 
 ## Terminology
 
 * Inputs
-* Don't trust them
-* Confirm they are what you expect (validation)
+	* Don't trust them
+	* Confirm they are what you expect (validation)
 * SQL statements
 * Database access methods
 	* e.g. mysql_query()
@@ -87,7 +90,7 @@
 
 ## Def: SQL statements
 
-Example:
+It's easer to show you some examples:
 
 ```SQL
 	SELECT name, address, phone, email FROM contacts WHERE name LIKE "Doiel";
@@ -102,16 +105,19 @@ Typically these are assembled by your PHP script based on inputs.
 
 ## Def: Database access methods (PHP v5.3 and earlier)
 
-* mysql_connect()
-* mysql_query()
-* mysql_fetch_row()
+Here's the most common ones:
 
-I. E. Any function beginning with "mysql_"
+* mysql_query()
+* mysql_db_query()
+* mysql_unbuffered_query()
+
+(Any function beginning with "mysql_" needs to be looked at)
 
 
 ## Def: Validation
 
-Making sure the input is exactly what you expected (e.g. if you were expecting the answer "1", "2" or "3" but your PHP program allows "hello" as an answer you have a validation problem. Probably an injection problem too)
+Making sure the input is exactly what you expected (e.g. if you were expecting the answer "1", "2" or "3" 
+but your PHP program allows "hello" as an answer you have a validation problem. Probably an injection problem too)
 
 
 ## Def: Sanitization (sometimes harder, but also helpful)
@@ -134,6 +140,7 @@ Questions?
 
 
 # Part 2
+(narrowing the problem)
 
 ## Input concerns
 
@@ -187,6 +194,7 @@ Questions?
 
 
 # Part 3
+(quick digretion about code audits)
 
 ## How do I audit?
 
@@ -216,6 +224,10 @@ Questions?
 * Is a PHP global used to build a string? [example]
 
 
+# Part 4 
+(examples)
+
+
 ## Example of bad inputs
 
 ```php
@@ -226,14 +238,18 @@ Questions?
 	$cnt = $_GET['cnt'];
 	// Don't assemble a string from PHP globals (e.g. both $_GET['name'] 
 	// and $cnt are problems here)
-	$msg = $_GET['name'] . ' has a count of '' . $cnt;
+	$msg = $_GET['name'] . ' has a count of ' . $cnt;
+	echo $msg;
 	// This SQL statement will suffer from injection for both $cnt AND from $_GET['name']
-	$sql = "SELECT email FROM contacts WHERE cnt = '" . $cnt . "' and name = '" . $_GET['name'];
+	$sql = "SELECT email FROM contacts WHERE cnt = '" . $cnt . "' and name = '" .
+		$_GET['name'];
 	mysql_query($sql);
 ```
+ 
+This example is vunerable to both page and SQL injection. It must be fixed!
 
 
-## Safer usage of PHP Globals
+## Safer version
 
 ```php
 	<?php
@@ -254,21 +270,24 @@ Questions?
 	mysql_query($sql);
 ```
 
-But wait, in can be easier!
+The raw inputs are no longer echo back to the browser. The SQL statement has been assembled
+from safe copies of the input.
 
 * Using basic PHP functions is good but can be tedious.
 * This is really true with legacy code.
 * Introducing safely-php - a simple library to add some sanitization and validation to your legacy PHP.
 
+But wait, in can be easier!
+
 
 ## Safely-php
 
-* Already installed on cwis.usc.edu (in /www/assets/safely-php/safely.php)
+* Already installed on central web server (e.g. /www/assets/safely-php/safely.php)
 	* Web services keeps this up to date
 * Or download it directly from Github
 	* https://github.com/uscwebservices/safely-php
 
-## Sanitization with safely-php
+### Sanitization with safely-php
 
 ```php
 	<?php
@@ -287,7 +306,7 @@ But wait, in can be easier!
 ```
 
 
-## Simple validation with safely-php
+### Simple validation with safely-php
 
 Sanitize and simple validate with safely-php
 
@@ -315,7 +334,7 @@ Sanitize and simple validate with safely-php
 That's it. It is that simple.
 
 
-## More examples.
+## Examples of problems and solutions
 
 Q: Is this example Safe?
 
@@ -425,12 +444,13 @@ A: No, it is very injectable,  **Good News**, this is easy to fix with safely.
 
 # In closing
 
-* Audit your legacy code
-* do it regularly, mark it on the calendar
 * Always validate and sanitize your inputs (or use safely-php to do it for you)
-* Remove unused PHP files so you don't have to review them next time
 * Consolidate your DB interactions so you can review fewer files and lines of PHP
-* If you like use safely-php to validate and sanitize your legacy code (or new code)
+* Remove unused PHP files so you don't have to review them next time
+* Audit your legacy code
+	* do it regularly, mark it on the calendar
+
+(If you like use safely-php to validate and sanitize your legacy or even new code)
 
 # Finally!
 
