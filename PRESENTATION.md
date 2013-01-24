@@ -1,4 +1,3 @@
-
 Below is some background material I put together for a presentation. Your milleage may very.
 
 USC Web Council<br />
@@ -94,7 +93,8 @@ It's easer to show you some examples:
 
 ```SQL
 	SELECT name, address, phone, email FROM contacts WHERE name LIKE "Doiel";
-	INSERT INFO contacts (name, address, phone, email) VALUES ("Fred", "321 First St. Anytown, Utopia", "123-456-7890", "fred@example.com");
+	INSERT INFO contacts (name, address, phone, email) VALUES 
+		("Fred", "321 First St. Anytown, Utopia", "123-456-7890", "fred@example.com");
 	SHOW DATABASES;
 	SHOW TABLES;
 	SELECT * FROM user;
