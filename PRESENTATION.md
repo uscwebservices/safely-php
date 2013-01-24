@@ -56,7 +56,7 @@ with simple sanitization and validation functions.
 * To put what we're talking about into practice means looking at ALL your PHP code
 * Legacy sites tend to have lots of files (and lots of lines of code)
 * Legacy sites to have code repeated in lots of place (due to the practice of copy and modify)
-* Legacy tend to lack co-herency as things tend to grow organically after a certain point
+* Legacy tend to lack coherency as things tend to grow organically after a certain point
 
 
 ## Some Good News
@@ -122,7 +122,13 @@ but your PHP program allows "hello" as an answer you have a validation problem. 
 
 ## Def: Sanitization (sometimes harder, but also helpful)
 
-In data processing this is analogous to water sanitization.  You're trying to remove all the bad or dangerous elements.  If as example you were accepting someone's email address and you received an input of "john.doe@example.com<script>alert('hello there');</script>". A sanitization function might remove "<script>...</script>"  and only return "john.doe@example.com".   (this last example is a common case of JavaScript injection if you presented the results without sanitization to the screen).  
+In data processing this is analogous to water sanitization.  You're trying to remove all 
+the bad or dangerous elements.  If as example you were accepting someone's email address
+and you received an input of "john.doe@example.com<script>alert('hello there');</script>".
+
+A sanitization function might remove "<script>...</script>"  and only return "john.doe@example.com".
+(this last example is a common case of JavaScript injection if you presented the results
+without sanitization to the screen).  
 
 ### Short definition:
 
