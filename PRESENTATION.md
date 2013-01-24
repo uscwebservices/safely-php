@@ -353,7 +353,8 @@ Q: Will $sql ever suffer from injection?
 
 ```php
 	<?php
-	$sql = "SELECT name, address, phonenumber, email FROM myfriends WHERE email = 'rsdoiel@usc.edu'";
+	$sql = "SELECT name, address, phonenumber, email FROM myfriends " .
+		"WHERE email = 'rsdoiel@usc.edu'";
 	mysql_query($sql);
 ```
 
@@ -363,7 +364,8 @@ Q: Can we have injection here?
 
 ```php
 	<?php
-	$sql = "SELECT name, address, phonenumber, email FROM myfriends WHERE email = '" . $email . "'";
+	$sql = "SELECT name, address, phonenumber, email FROM myfriends WHERE email = '" .
+		$email . "'";
 	mysql_query($sql);
 ```
 
@@ -384,11 +386,13 @@ Q: Is this Ok?
 	if (in_array(trim($_POST['email']), $safe_emails)) {
 		$email = trim($_POST['email']);
 	}
-	$sql = "SELECT name, address, phonenumber, email FROM myfriends WHERE email = '" . $email . "'";
+	$sql = "SELECT name, address, phonenumber, email FROM myfriends WHERE email = '" .
+		$email . "'";
 	mysql_query($sql);
 ```
 
-A: Sure, you are explicitly checking the email address in $_POST['email'] against a fixed set of known values.
+A: Sure, you are explicitly checking the email address in $_POST['email'] against a
+fixed set of known values.
 
 Explanation:
 
@@ -407,7 +411,8 @@ Explanation:
 		$email = trim($_POST['email']);
 	}
 	// Now we can build our SQL statement
-	$sql = "SELECT name, address, phonenumber, email FROM myfriends WHERE email = '" . $email . "'";
+	$sql = "SELECT name, address, phonenumber, email FROM myfriends WHERE email = '" .
+		$email . "'";
 	mysql_query($sql);
 ```
 
@@ -416,7 +421,8 @@ Q: Is this code OK?
 
 ```php
 	<?php
-	$sql = "SELECT name, address, phonenumber, email FROM myfriends WHERE email = '" . $_POST['email'] . "'";
+	$sql = "SELECT name, address, phonenumber, email FROM myfriends WHERE email = '" .
+		$_POST['email'] . "'";
 	mysql_query($sql);
 ```
 
@@ -426,7 +432,8 @@ A: No, it is very injectable,  **Good News**, this is easy to fix with safely.
 	<?php
 	require_once("/www/assets/safely-php/safely.php");
 	$post = safePOST();
-	$sql = "SELECT name, address, phonenumber, email FROM myfriends WHERE email = '" . $post['email'] . "'";
+	$sql = "SELECT name, address, phonenumber, email FROM myfriends WHERE email = '" .
+		$post['email'] . "'";
 	mysql_query($sql);
 ```
 
