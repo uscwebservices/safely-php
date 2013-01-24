@@ -6,8 +6,8 @@ R. S. Doiel, ITS Web Services<br />
 [http://github.com/uscwebservices/safely-php](http://github.com/uscwebservices/safely-php)
 
 
-_SQL injection via PHP_
-(__protecting legacy websites with safely-php__)
+# SQL injection via PHP
+(protecting legacy websites with safely-php)
 
 
 # Part 1
