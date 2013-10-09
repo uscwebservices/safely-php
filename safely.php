@@ -41,6 +41,17 @@ function makeValidationMap ($obj, $do_urldecode = false) {
 	return $validation_map;
 }
 
+/**
+ * replace non-ascii characters with hex code
+ * this replace mysql_real_escape_string because this requires a mysql
+ * connection to exist.
+ */
+function escape($value) {
+    $search = array("\\",  "\x00", "\n",  "\r",  "'",  '"', "\x1a");
+    $replace = array("\\\\","\\0","\\n", "\\r", "\'", '\"', "\\Z");
+
+    return str_replace($search, $replace, $value);
+}
 
 /**
  * makeAs takes a value and renders it using the format
@@ -66,9 +77,9 @@ function makeAs ($value, $format) {
 	case 'varname':
 		return preg_replace('/![A-Z,a-z,_]+/', "", $value);
 	case 'html':
-		return mysql_real_escape_string($value);
+		return escape($value);
 	case 'text':
-		return mysql_real_escape_string(strip_tags($value));
+		return escape(strip_tags($value));
 	}
 	return false;
 }
