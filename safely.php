@@ -47,6 +47,15 @@ function makeValidationMap ($obj, $do_urldecode = false) {
  * connection to exist.
  */
 function escape($value) {
+    // Handle multi-byte issues by converting to UTF-8
+    // if needed.
+    $from_encoding = mb_detect_encoding($str);
+    if ($from_encoding === false) {
+        die("character encoding detection failed!");
+    } else if ($from_encoding !== "UTF-8") {
+        $value = mb_convert_encoding($value, "UTF-8", $from_encoding);
+    }
+
     $search = array("\\",  "\x00", "\n",  "\r",  "'",  '"', "\x1a");
     $replace = array("\\\\","\\0","\\n", "\\r", "\'", '\"', "\\Z");
 
