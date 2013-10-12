@@ -20,22 +20,24 @@
 function makeValidationMap ($obj, $do_urldecode = false) {
 	$is_integer = '/^[0-9]+$/';
 	$is_float = '/^[0-9]+\.[0-9]+$/';
-	$is_varname = '/^([A-Z,a-z]|_)+$/';
+	$is_varname = '/^([A-Z,a-z]|_|[0-9])+$/';
 	$has_tags = '/(<[A-Z,a-z]+|<\/[A-Z,a-z]+>)/';
 	$validation_map = array();
 	
 	foreach ($obj as $key => $value) {
-		if (preg_match($is_integer, $value) === 1) {
-			$validation_map[$key] = "Integer";
-		} else if (preg_match($is_float, $value) === 1) {
-			$validation_map[$key] = "Float";
-		} else if (preg_match($is_varname, $value) === 1) {
-			$validation_map[$key] = "Varname";
-		} else if (preg_match($has_tags, $value) === 1) {
-			$validation_map[$key] = "HTML";
-		} else {
-			$validation_map[$key] = "Text";
-		}
+        if (isset($value)) {
+		    if (preg_match($is_integer, "$value") === 1) {
+			    $validation_map[$key] = "Integer";
+		    } else if (preg_match($is_float, "$value") === 1) {
+			    $validation_map[$key] = "Float";
+		    } else if (preg_match($is_varname, "$value") === 1) {
+			    $validation_map[$key] = "Varname";
+		    } else if (preg_match($has_tags, "$value") === 1) {
+			    $validation_map[$key] = "HTML";
+		    } else {
+			    $validation_map[$key] = "Text";
+		    }
+        }
 	}
 	
 	return $validation_map;
