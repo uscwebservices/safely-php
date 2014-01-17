@@ -51,7 +51,7 @@ function makeValidationMap ($obj, $do_urldecode = false) {
 function escape($value) {
     // Handle multi-byte issues by converting to UTF-8
     // if needed.
-    $from_encoding = mb_detect_encoding($str);
+    $from_encoding = mb_detect_encoding($value);
     if ($from_encoding === false) {
         die("character encoding detection failed!");
     } else if ($from_encoding !== "UTF-8") {
