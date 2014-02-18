@@ -10,6 +10,24 @@
  */
 
 /**
+ * safeStrToTime - process a strtotime but THROW an exception of parse is bad.
+ * @param $s - string to parse
+ * @param $offset - a date object to parse relative to.
+ * @return a time object or throw an exception if parse fails.
+ */
+function safeStrToTime ($s, $offset = false) {
+    if ($offset === false) {
+        $time = strtotime($s);
+    } else {
+        $time = strtotime($s, $offset);
+    }
+    if ($time === false || $time === -1) {
+        throw new Exception ("Can't parse date: $s");
+    }
+    return $time;
+}
+
+/**
  * makeValidationMap - given an example $obj, calculate
  * a viable validation map to safely use with other requests.
  * @param $obj - e.g. $_GET, $_POST or $_SERVER

@@ -8,6 +8,9 @@ if (php_sapi_name() !== "cli") {
 	echo "Must be run from the command line." . PHP_EOL;
 	exit(1);
 }
+error_reporting(E_ALL | E_STRICT);
+@date_default_timezone_set(date_default_timezone_get());
+
 require('assert.php');
 $_POST = array();
 $_SERVER = array();
@@ -137,6 +140,26 @@ function testSERVERProcessing () {
 	return "OK";
 }
 
+function testSafeStrToTime() {
+    global $assert;
+    $s = "2014-01-01 00:00:00";
+    try {
+        $dt = safeStrToTime($s);
+    } catch (Exception $exception) {
+        $assert->fail("Shouldn't get this exception: " . $exception);
+    }
+    
+    $s = "bogus date here.";
+    $exception_thrown = false;
+    try {
+        $dt = safeStrToTime($s);
+    } catch(Exception $exception) {
+        $exception_thrown = true;
+    }
+    $assert->ok($exception_thrown, "Should have thrown an exception on converting $s");
+    return "OK";
+}
+
 echo "Starting [" . $argv[0] . "]..." . PHP_EOL;
 
 $assert->ok(function_exists("makeValidationMap"), "Should have a makeValidationMap function defined.");
@@ -146,8 +169,9 @@ $assert->ok(function_exists("safeSERVER"), "Should have a safeSERVER function de
 
 echo "\tTesting support functions: " . testSupportFunctions() . PHP_EOL;
 echo "\tTesting get processing: " . testGETProcessing() . PHP_EOL;
-echo "\tTesitng post processing: " . testPOSTProcessing() . PHP_EOL;
-echo "\tTesitng server processing: " . testSERVERProcessing() . PHP_EOL;
+echo "\tTesting post processing: " . testPOSTProcessing() . PHP_EOL;
+echo "\tTesting server processing: " . testSERVERProcessing() . PHP_EOL;
+echo "\tTesting safeStrToTime process: " . testSafeStrToTime() . PHP_EOL;
 
 ///$assert->fail("safeGET(), safePOST(), safeSERVER() tests not implemented.");
 echo "Success!" . PHP_EOL;
