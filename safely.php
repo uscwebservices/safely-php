@@ -144,6 +144,7 @@ function safeGET ($validation_map = NULL) {
  */
 function safePOST ($validation_map = NULL) {
 	global $_POST;
+	$results = array();
 	
 	if ($validation_map === NULL) {
 		$validation_map = makeValidationMap($_POST, false);
@@ -166,6 +167,7 @@ function safePOST ($validation_map = NULL) {
  */
 function safeSERVER ($validation_map = NULL) {
 	global $_SERVER;
+	$results = array();
 	
 	if ($validation_map === NULL) {
 		$validation_map = makeValidationMap($_SERVER, false);
