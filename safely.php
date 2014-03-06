@@ -9,6 +9,7 @@
  * University of Southern California
  */
 
+
 /**
  * safeStrToTime - process a strtotime but THROW an exception of parse is bad.
  * @param $s - string to parse
@@ -104,7 +105,13 @@ function makeAs ($value, $format) {
 		}
 		break;
 	case 'varname':
-		return preg_replace('/![A-Z,a-z,_]+/', "", $value);
+		return preg_replace('/\W/u', "", $value);
+	case 'varname_list':
+        $parts = explode(',', $value);
+        for ($i = 0; $i < count($parts); $i += 1) {
+           $parts[$i] = preg_replace('/\W/u', '', $parts[$i]);
+        }
+		return implode(',', $parts);
 	case 'html':
 		return escape($value);
 	case 'text':

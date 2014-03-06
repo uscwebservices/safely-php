@@ -160,6 +160,19 @@ function testSafeStrToTime() {
     return "OK";
 }
 
+function testVarnameLists() {
+    global $assert;
+    $s = "one,two,three";
+    $r = makeAs($s, "varname_list");
+    $assert->equal($s, $r, "[$s] == [$r]");
+    $e = 'one,two,three';
+    $s = '$' . 'one,two,' . '$' . 'three';
+    $r = makeAs($s, "varname_list");
+    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+    
+    return "OK";
+}
+
 echo "Starting [" . $argv[0] . "]..." . PHP_EOL;
 
 $assert->ok(function_exists("makeValidationMap"), "Should have a makeValidationMap function defined.");
@@ -172,6 +185,7 @@ echo "\tTesting get processing: " . testGETProcessing() . PHP_EOL;
 echo "\tTesting post processing: " . testPOSTProcessing() . PHP_EOL;
 echo "\tTesting server processing: " . testSERVERProcessing() . PHP_EOL;
 echo "\tTesting safeStrToTime process: " . testSafeStrToTime() . PHP_EOL;
+echo "\tTesting Varname Lists process: " . testVarnameLists() . PHP_EOL;
 
 ///$assert->fail("safeGET(), safePOST(), safeSERVER() tests not implemented.");
 echo "Success!" . PHP_EOL;
