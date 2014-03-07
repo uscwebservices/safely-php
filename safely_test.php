@@ -33,8 +33,8 @@ function testSupportFunctions () {
 		"html" => "HTML",
 		"text" => "Text"
 	);
-	$results = makeValidationMap($_GET);
-	$assert->ok($results, "Should get back an array for makeValidationMap()");
+	$results = defaultValidationMap($_GET);
+	$assert->ok($results, "Should get back an array for defaultValidationMap()");
 	foreach ($expected_map as $key => $value) {
 		$assert->ok(isset($results[$key]), "Must have $key in results");
 		$assert->equal($results[$key], $expected_map[$key], "results != expected for [$key], got " . print_r($results, true));
@@ -173,9 +173,26 @@ function testVarnameLists() {
     return "OK";
 }
 
+function testPRCEExpressions() {
+    global $assert;
+
+    $re = "\([0-9][0-9][0-9]\)[0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]";
+    $s = "(213)740-2925";
+    $e = "(213)740-2925";
+    $r = makeAs($s, $re);
+    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+
+    $s = "(213)740-292592";
+    $e = false;
+    $r = makeAs($s, $re);
+    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+    return "OK";
+    
+}
+
 echo "Starting [" . $argv[0] . "]..." . PHP_EOL;
 
-$assert->ok(function_exists("makeValidationMap"), "Should have a makeValidationMap function defined.");
+$assert->ok(function_exists("defaultValidationMap"), "Should have a defaultValidationMap function defined.");
 $assert->ok(function_exists("safeGET"), "Should have a safeGET function defined.");
 $assert->ok(function_exists("safePOST"), "Should have a safePOST function defined.");
 $assert->ok(function_exists("safeSERVER"), "Should have a safeSERVER function defined.");
@@ -186,6 +203,7 @@ echo "\tTesting post processing: " . testPOSTProcessing() . PHP_EOL;
 echo "\tTesting server processing: " . testSERVERProcessing() . PHP_EOL;
 echo "\tTesting safeStrToTime process: " . testSafeStrToTime() . PHP_EOL;
 echo "\tTesting Varname Lists process: " . testVarnameLists() . PHP_EOL;
+echo "\tTesting PRCE expressions process: " . testPRCEExpressions() . PHP_EOL;
 
 ///$assert->fail("safeGET(), safePOST(), safeSERVER() tests not implemented.");
 echo "Success!" . PHP_EOL;

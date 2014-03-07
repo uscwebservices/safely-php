@@ -29,14 +29,17 @@ function safeStrToTime ($s, $offset = false) {
 }
 
 /**
- * makeValidationMap - given an example $obj, calculate
+ * defaultValidationMap - given an example $obj, calculate
  * a viable validation map to safely use with other requests.
+ * Note this is a restricted map since auto-detection is not precise.
+ * E.g. If you want to validate with RegExp then you need to manually 
+ * create your map.
  * @param $obj - e.g. $_GET, $_POST or $_SERVER
  * @param $do_urldecode - flag to trigger urldecode of values before
  * analysize the content.
  * @return a validation map array
  */
-function makeValidationMap ($obj, $do_urldecode = false) {
+function defaultValidationMap ($obj, $do_urldecode = false) {
 	$is_integer = '/^[0-9]+$/';
 	$is_float = '/^[0-9]+\.[0-9]+$/';
 	$is_varname = '/^([A-Z,a-z]|_|[0-9])+$/';
@@ -87,7 +90,8 @@ function escape($value) {
  * makeAs takes a value and renders it using the format
  * passed (e.g. Integer, Float, Html, Varname, Text)
  * @param $value - the value to be processed
- * @param $format - the format to render (i.e. integer, float, varname, html, text)
+ * @param $format - the format to render (i.e. integer, float, varname, 
+ * varname_list, html, text and PRCE friendly regular expressions)
  * @return a safe version of value in the format requested or false if a problem.
  */
 function makeAs ($value, $format) {
@@ -117,6 +121,15 @@ function makeAs ($value, $format) {
 	case 'text':
 		return escape(strip_tags($value));
 	}
+    // We haven't found one of our explicit formats so...
+    $preg_result = preg_match(">" . '^' . 
+        str_replace(">", "\>", $format) . '$' . ">",
+        $value);
+    error_log("DEBUG format $format $value $preg_result");
+
+    if ($preg_result === 1) {
+        return $value;
+    }
 	return false;
 }
 
@@ -131,7 +144,9 @@ function safeGET ($validation_map = NULL) {
 	$results = array();
 
 	if ($validation_map === NULL) {
-		$validation_map = makeValidationMap($_GET, true);
+        // We support limited auto-detect types otherwise App
+        // Code needs to supply a validation map.
+		$validation_map = defaultValidationMap($_GET, true);
 	}
 	forEach($validation_map as $key => $format) {
 		$key = makeAs($key, "varname");
@@ -154,7 +169,7 @@ function safePOST ($validation_map = NULL) {
 	$results = array();
 	
 	if ($validation_map === NULL) {
-		$validation_map = makeValidationMap($_POST, false);
+		$validation_map = defaultValidationMap($_POST, false);
 	}
 	forEach($validation_map as $key => $format) {
 		$key = makeAs($key, "varname");
@@ -177,7 +192,7 @@ function safeSERVER ($validation_map = NULL) {
 	$results = array();
 	
 	if ($validation_map === NULL) {
-		$validation_map = makeValidationMap($_SERVER, false);
+		$validation_map = defaultValidationMap($_SERVER, false);
 	}
 	forEach($validation_map as $key => $format) {
 		$key = makeAs($key, "varname");
