@@ -125,7 +125,6 @@ function makeAs ($value, $format) {
     $preg_result = preg_match(">" . '^' . 
         str_replace(">", "\>", $format) . '$' . ">",
         $value);
-    error_log("DEBUG format $format $value $preg_result");
 
     if ($preg_result === 1) {
         return $value;
