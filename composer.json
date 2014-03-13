@@ -1,0 +1,20 @@
+{
+    "name": "uscwebservices/safely-php",
+    "description": "A small library for improving input handling in legacy PHP applications.",
+    "license": "University of Southern California all rights reserved",
+    "authors": [
+        {
+            "name": "R. S. Doiel,",
+            "email": "rsdoiel@usc.edu"
+        }
+    ],
+    "version": "0.0.3",
+    "require": {
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url:" "git@github.com:uscwebservices/safely-php.git"
+        }
+    ]
+}
