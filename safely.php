@@ -108,8 +108,12 @@ function makeAs ($value, $format) {
 			return $f;
 		}
 		break;
+    case 'varname_dash':
+        preg_match_all('/\w|[0-9]|_|-/', $value, $s);
+		return implode('', $s[0]);
 	case 'varname':
-		return preg_replace('/\W/u', "", $value);
+        preg_match_all('/\w|[0-9]|_/', $value, $s);
+		return implode('', $s[0]);
 	case 'varname_list':
         $parts = explode(',', $value);
         for ($i = 0; $i < count($parts); $i += 1) {
@@ -148,7 +152,9 @@ function safeGET ($validation_map = NULL) {
 		$validation_map = defaultValidationMap($_GET, true);
 	}
 	forEach($validation_map as $key => $format) {
-		$key = makeAs($key, "varname");
+        // Since RESTful style allows dashes in the URLs we should support
+        // that in GET args.
+		$key = makeAs($key, "varname_dash");
 		if (isset($_GET[$key])) {
 			$results[$key] = makeAs($_GET[$key], $format);
 		}

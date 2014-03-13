@@ -55,13 +55,18 @@ function testGETProcessing () {
 		"one" => "1",
 		"two" => "2.1",
 		"three" => "my_var_name",
-		"four" => "This is a string."
+		"four" => "This is a string.",
+        "five_six" => "this is five underscore six",
+        "seven-eight" => "this is seven dash eight"
 	);
 	$expected_map = array(
 		"one" => "1",
 		"two" => "2.1",
 		"three" => "my_var_name",
 		"four" => "This is a string.",
+        "five_six" => "this is five underscore six",
+        "seven-eight" => "this is seven dash eight"
+
 	);
 	
 	$results = safeGET();
