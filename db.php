@@ -126,10 +126,10 @@ class Db {
                 call_user_func_array('mysqli_stmt_bind_param', 
                                          $call_params);
             }
-            mysqli_stmt_execute($stmt);
             if ($verbose === true) {
                 error_log("Prepared SQL: " . print_r($stmt, true));
             }
+            mysqli_stmt_execute($stmt);
             if (stripos($sql, 'SELECT') === 0) {
                     $this->rows_affected = mysqli_stmt_num_rows($stmt);
                     $result = mysqli_stmt_get_result($stmt);
