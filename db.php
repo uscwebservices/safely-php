@@ -159,6 +159,10 @@ class Db {
                     $sql = preg_replace('/\?/', $call_param, $sql, 1);
                 }
             }
+            if ($verbose === true) {
+                error_log("SQL: " . $sql);
+            }
+
             $qry = mysql_query($sql, $this->link);
             if (stripos($sql, 'SELECT') === 0) {
                     $this->rows_affected = mysql_num_rows($qry);
