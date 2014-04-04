@@ -26,12 +26,14 @@ function testSupportFunctions () {
 	$_GET["varname"] = "my_var_name";
 	$_GET["html"] = "This is a <b>html</b>.";
 	$_GET["text"] = "This is plain text.";
+    $_GET["bool"] = "true";
 	$expected_map = array(
 		"int" => "Integer",
 		"float" => "Float",
 		"varname" => "Varname",
 		"html" => "HTML",
-		"text" => "Text"
+		"text" => "Text",
+        "bool" => "Bool"
 	);
 	$results = defaultValidationMap($_GET);
 	$assert->ok($results, "Should get back an array for defaultValidationMap()");
@@ -66,7 +68,6 @@ function testGETProcessing () {
 		"four" => "This is a string.",
         "five_six" => "this is five underscore six",
         "seven-eight" => "this is seven dash eight"
-
 	);
 	
 	$results = safeGET();
