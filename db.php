@@ -126,9 +126,6 @@ class Db {
                 call_user_func_array('mysqli_stmt_bind_param', 
                                          $call_params);
             }
-            if ($verbose === true) {
-                error_log("Prepared SQL: " . print_r($stmt, true));
-            }
             mysqli_stmt_execute($stmt);
             if (stripos($sql, 'SELECT') === 0) {
                     $this->rows_affected = mysqli_stmt_num_rows($stmt);
@@ -136,6 +133,9 @@ class Db {
             } else {
                     $this->rows_affected = mysqli_stmt_affected_rows($stmt);
                     $result = false;
+            }
+            if ($verbose === true) {
+                error_log("Prepared SQL: " . print_r($stmt, true));
             }
             $this->last_insert_id = mysqli_insert_id($this->link);
 
