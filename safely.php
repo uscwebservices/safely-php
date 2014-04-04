@@ -44,7 +44,7 @@ function defaultValidationMap ($obj, $do_urldecode = false) {
 	$is_float = '/^[0-9]+\.[0-9]+$/';
 	$is_varname = '/^([A-Z,a-z]|_|[0-9])+$/';
 	$has_tags = '/(<[A-Z,a-z]+|<\/[A-Z,a-z]+>)/';
-    $is_bool = '/^(true|1|false|0)$/';
+    $is_boolean = '/^(true|1|false|0)$/';
 	$validation_map = array();
 	
 	foreach ($obj as $key => $value) {
@@ -53,8 +53,8 @@ function defaultValidationMap ($obj, $do_urldecode = false) {
 			    $validation_map[$key] = "Integer";
 		    } else if (preg_match($is_float, "$value") === 1) {
 			    $validation_map[$key] = "Float";
-            } else if (preg_match($is_bool, "$value") === 1) {
-                $validation_map[$key] = "Bool";
+            } else if (preg_match($is_boolean, "$value") === 1) {
+                $validation_map[$key] = "Boolean";
 		    } else if (preg_match($is_varname, "$value") === 1) {
 			    $validation_map[$key] = "Varname";
 		    } else if (preg_match($has_tags, "$value") === 1) {
@@ -110,6 +110,12 @@ function makeAs ($value, $format) {
 			return $f;
 		}
 		break;
+    case 'boolean':
+        if ($value === 'true' || 
+                $value === '1') {
+            return true;
+        }
+        return false;
     case 'varname_dash':
         preg_match_all('/\w|[0-9]|_|-/', $value, $s);
 		return implode('', $s[0]);

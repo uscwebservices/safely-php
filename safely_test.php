@@ -26,14 +26,14 @@ function testSupportFunctions () {
 	$_GET["varname"] = "my_var_name";
 	$_GET["html"] = "This is a <b>html</b>.";
 	$_GET["text"] = "This is plain text.";
-    $_GET["bool"] = "true";
+    $_GET["boolean"] = "true";
 	$expected_map = array(
 		"int" => "Integer",
 		"float" => "Float",
 		"varname" => "Varname",
 		"html" => "HTML",
 		"text" => "Text",
-        "bool" => "Bool"
+        "boolean" => "Boolean"
 	);
 	$results = defaultValidationMap($_GET);
 	$assert->ok($results, "Should get back an array for defaultValidationMap()");
@@ -174,6 +174,26 @@ function testVarnameLists() {
     $e = 'one,two,three';
     $s = '$' . 'one,two,' . '$' . 'three';
     $r = makeAs($s, "varname_list");
+    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+    $e = true;
+    $s = 'true';
+    $r = makeAs($s, 'boolean');
+    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+    $e = true;
+    $s = '1';
+    $r = makeAs($s, 'boolean');
+    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+    $e = false;
+    $s = 'false';
+    $r = makeAs($s, 'boolean');
+    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+    $e = false;
+    $s = '0';
+    $r = makeAs($s, 'boolean');
+    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+    $e = false;
+    $s = 'blahblah';
+    $r = makeAs($s, 'boolean');
     $assert->equal($e, $r, "[$e] == [$r] for [$s]");
     
     return "OK";
