@@ -25,7 +25,7 @@ $valid_server_map = array(
 );
 
 // Now get a safe version of the $_SERVER variable
-$server = safeSERVER($valid_server_map, true);
+$server = safeSERVER($valid_server_map);
 
 // Now we can check to see if we have a safe PATH_INFO
 $path_info = $server['PATH_INFO'];
