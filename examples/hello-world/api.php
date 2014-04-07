@@ -21,11 +21,11 @@ define("HELLO_NAME_ROUTE", "/first-name/[A-Z][a-z]+");// This is the name route
 // Here's the map we're interested, only the PATH_INFO variable with the following
 // PRCE RegExp.
 $valid_server_map = array(
-    "PATH_INFO" => "(/|/first-name/)(|[A-Z][a-z]+)"
+    "PATH_INFO" => "(" . HELLO_WORLD_ROUTE . "|" . HELLO_NAME_ROUTE . ")"
 );
 
 // Now get a safe version of the $_SERVER variable
-$server = safeSERVER($valid_server_map);
+$server = safeSERVER($valid_server_map, true);
 
 // Now we can check to see if we have a safe PATH_INFO
 $path_info = $server['PATH_INFO'];
@@ -52,7 +52,7 @@ $helloWorldHandler = function ($path, $options) {
     // We always return the same message for this route.
     $headers = array();
     $headers[] = fmtHeader("OK", true, 200);
-    $headers[] = fmtHeader("Content-Type: application/json", true);
+    $headers[] = fmtHeader("Content-Type: application/json");
     $content = '{"message": "Hello World!"}';
     // We assemble a standard response using the fmtResponse() function.
     return fmtResponse($headers, $content);
@@ -60,7 +60,6 @@ $helloWorldHandler = function ($path, $options) {
 
 $helloNameHandler = function ($path, $options) {
     // This time we need to parse the path for the name.
-    error_log("PATH: $path");
     $name = str_replace("/first-name/", "", $path);
     $headers = array();
     $headers[] = fmtHeader("Content-Type: application/json", true);
