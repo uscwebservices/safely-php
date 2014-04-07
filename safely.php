@@ -94,9 +94,10 @@ function escape($value) {
  * @param $value - the value to be processed
  * @param $format - the format to render (i.e. integer, float, varname, 
  * varname_list, html, text and PRCE friendly regular expressions)
+ * @param $verbose - error log the result of makeAs for regular expression.
  * @return a safe version of value in the format requested or false if a problem.
  */
-function makeAs ($value, $format) {
+function makeAs ($value, $format, $verbose = false) {
 	switch (strtolower($format)) {
 	case 'integer':
 		$i = intval($value);
@@ -138,6 +139,9 @@ function makeAs ($value, $format) {
         str_replace(">", "\>", $format) . '$' . ">",
         $value);
 
+    if ($verbose === true) {
+        error_log("value, format and preg_math result: $value $format -> $preg_result");
+    }
     if ($preg_result === 1) {
         return $value;
     }
@@ -148,9 +152,10 @@ function makeAs ($value, $format) {
  * safeGET - if necessary generate a default validation object and
  * process the global $_GET returning a sanitized version.
  * @param $validation_map - You can supply an explicit validation map.
- * @return the sanitized verion of $_GET.
+ * @param $verbose - log regexp makeAs results. (default is false)
+ * @return the sanitized version of $_GET.
  */
-function safeGET ($validation_map = NULL) {
+function safeGET ($validation_map = NULL, $verbose = false) {
 	global $_GET;
 	$results = array();
 
@@ -162,9 +167,9 @@ function safeGET ($validation_map = NULL) {
 	forEach($validation_map as $key => $format) {
         // Since RESTful style allows dashes in the URLs we should support
         // that in GET args.
-		$key = makeAs($key, "varname_dash");
+		$key = makeAs($key, "varname_dash", $verbose);
 		if (isset($_GET[$key])) {
-			$results[$key] = makeAs($_GET[$key], $format);
+			$results[$key] = makeAs($_GET[$key], $format, $verbose);
 		}
 	}
 	return $results;
@@ -176,8 +181,10 @@ function safeGET ($validation_map = NULL) {
  * @param $validation_map - You can supply an explicit validation map.
  * @return false if their is a problem otherwise the sanitized verion of
  * $_POST.
+ * @param $verbose - log regexp makeAs results. (default is false)
+ * @return the sanitized version of $_POST
  */
-function safePOST ($validation_map = NULL) {
+function safePOST ($validation_map = NULL, $verbose = false) {
 	global $_POST;
 	$results = array();
 	
@@ -185,9 +192,9 @@ function safePOST ($validation_map = NULL) {
 		$validation_map = defaultValidationMap($_POST, false);
 	}
 	forEach($validation_map as $key => $format) {
-		$key = makeAs($key, "varname");
+		$key = makeAs($key, "varname", $verbose);
 		if (isset($_POST[$key])) {
-			$results[$key] = makeAs($_POST[$key], $format);
+			$results[$key] = makeAs($_POST[$key], $format, $verbose);
 		}
 	}
 	return $results;
@@ -199,8 +206,10 @@ function safePOST ($validation_map = NULL) {
  * @param $validation_map - You can supply an explicit validation map.
  * @return false if their is a problem otherwise the sanitized verion of
  * $_SERVER.
+ * @param $verbose - log regexp makeAs results. (default is false)
+ * @return the sanitized version of $_SERVER
  */
-function safeSERVER ($validation_map = NULL) {
+function safeSERVER ($validation_map = NULL, $verbose = false) {
 	global $_SERVER;
 	$results = array();
 	
@@ -208,14 +217,11 @@ function safeSERVER ($validation_map = NULL) {
 		$validation_map = defaultValidationMap($_SERVER, false);
 	}
 	forEach($validation_map as $key => $format) {
-		$key = makeAs($key, "varname");
+		$key = makeAs($key, "varname", $verbose);
 		if (isset($_SERVER[$key])) {
-			$results[$key] = makeAs($_SERVER[$key], $format);
+			$results[$key] = makeAs($_SERVER[$key], $format, $verbose);
 		}
 	}
 	return $results;
 }
-
-
-
 ?>

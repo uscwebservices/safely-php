@@ -142,7 +142,16 @@ function testSERVERProcessing () {
 	foreach ($results as $key => $value) {
 		$assert->ok(isset($expected_map[$key]), "Unexpected $key in results" . print_r($results, true));
 	}
-	
+
+    // Test processing PATH_INFO against a known path structure.
+    $term_code_regexp = "20[0-9][0-9][1-3]";
+    $section_code_regexp = "[0-9][0-9][0-9][0-9][0-9]";
+    $_SERVER['PATH_INFO'] = '/20142/33361';
+    $results = safeSERVER(array(
+            "PATH_INFO" => '/' . $term_code_regexp . '/' . $section_code_regexp
+        ));
+    $assert->ok($results, "Should have results from safeSERVER() for PATH_INFO");
+    $assert->ok($results['PATH_INFO'], "PATH_INFO should not be false");
 	return "OK";
 }
 
@@ -205,13 +214,14 @@ function testPRCEExpressions() {
     $re = "\([0-9][0-9][0-9]\)[0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]";
     $s = "(213)740-2925";
     $e = "(213)740-2925";
-    $r = makeAs($s, $re);
+    $r = makeAs($s, $re, true);
     $assert->equal($e, $r, "[$e] == [$r] for [$s]");
 
     $s = "(213)740-292592";
     $e = false;
-    $r = makeAs($s, $re);
+    $r = makeAs($s, $re, true);
     $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+
     return "OK";
     
 }
