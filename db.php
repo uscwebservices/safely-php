@@ -43,7 +43,6 @@ class Db {
             $this->link = mysqli_connect($this->db_host, $this->db_user, $this->db_password, $this->db_name);
             return $this->link;
         } else if ($this->db_type === 'mysql') {
-            //error_log("DEBUG --host=" . $this->db_host . " --user=" . $this->db_user . " --password=" . $this->db_password);
             $this->link = mysql_connect($this->db_host, $this->db_user, $this->db_password);
             if ($this->link) {
                 $db_selected = mysql_select_db($this->db_name, $this->link);
@@ -150,17 +149,24 @@ class Db {
             return true;
         } else if ($this->db_type === "mysql") {
             if (strpos($sql, '?') > -1) {
-                $cal_param = '';
-                for ($i = 0; $i < count($params); $i += 1) {
-                    if (is_int($params[$i])) {
-                        $call_param = intval($params[$i]);
-                    } else if (is_float($params[$i])) {
-                        $call_param = floatval($params[$i]);
-                    } else {
-                        $call_param = '"' . mysql_real_escape_string($params[$i], $this->link) . '"';
+                $parts = explode('?', $sql);
+                $assembled = array();
+                for ($i = 0, $j = 0; $i < count($parts); $i += 1) {
+                    $assembled[] = $parts[$i];
+                    $call_param = '';
+                    if ($j < count($params)) {
+                        if (is_int($params[$j])) {
+                            $call_param = intval($params[$j]);
+                        } else if (is_float($params[$j])) {
+                            $call_param = floatval($params[$j]);
+                        } else {
+                            $call_param = '"' . mysql_real_escape_string($params[$j], $this->link) . '"';
+                        }
+                        $assembled[] = $call_param;
+                        $j += 1;
                     }
-                    $sql = preg_replace('/\?/', $call_param, $sql, 1);
                 }
+                $sql = implode('', $assembled);
             }
             if ($verbose === true) {
                 error_log("SQL: " . $sql);

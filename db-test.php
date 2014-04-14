@@ -84,6 +84,129 @@ function testSQL($MYSQL_CONNECTION_URL) {
     return "OK";
 }
 
+function testEmbeddedQuestionMarks($MYSQL_CONNECTION_URL) {
+    global $assert;
+    
+    $db = new Db($MYSQL_CONNECTION_URL);
+    $db->open();
+    $sql = 'CREATE TABLE IF NOT EXISTS events (' .
+            'event_id INTEGER AUTO_INCREMENT PRIMARY KEY, '.
+            'title VARCHAR(255) NOT NULL, ' .
+            'subtitle VARCHAR(255) DEFAULT "", ' .
+            'summary TEXT, description TEXT, ' .
+            'venue VARCHAR(255) DEFAULT "", ' .
+            'campus VARCHAR(255) DEFAULT "", ' .
+            'building_code VARCHAR(255) DEFAULT "", ' .
+            'room VARCHAR(255) DEFAULT "", ' .
+            'address TEXT, ' .
+            'cost TEXT, ' .
+            'organizer VARCHAR(50) DEFAULT NULL, ' .
+            'contact_phone VARCHAR(38) DEFAULT NULL, ' .
+            'contact_email VARCHAR(45) DEFAULT NULL, ' .
+            'rsvp_email VARCHAR(45) DEFAULT NULL, ' .
+            'rsvp_url VARCHAR(255) DEFAULT "", ' .
+            'website_url VARCHAR(255) DEFAULT NULL, ' .
+            'ticket_url VARCHAR(255) DEFAULT NULL, ' .
+            'feature_candidate smallint(1) DEFAULT NULL, ' .
+            'user_id INTEGER DEFAULT 0, ' .
+            'username VARCHAR(255) DEFAULT "", ' .
+            'display_name VARCHAR(255) DEFAULT "", ' .
+            'parent_calendar_id INTEGER DEFAULT 0, ' .
+            'parent_calendar VARCHAR(255) DEFAULT "", ' .
+            'scratch_pad TEXT, ' .
+            'created DATETIME DEFAULT "0000-00-00 00:00:00", ' .
+            'updated TIMESTAMP, ' .
+            'publication_date DATETIME DEFAULT NULL)';
+    $db->executeSQL($sql);
+    
+    $event_id =  906300;
+    $event = array(
+        "event_id" => 906300,
+        "title" => null,
+        "subtitle" => "USC School of Cinematic Arts",
+        "summary" => null,
+        "description" => null,
+        "cost" => "Free",
+        "organizer" => "aago@cinema.usc.edu",
+        "contact_phone" => "(213) 740-2330",
+        "contact_email" => "",
+        "rsvp_email" => "",
+        "rsvp_url" => "http:\/\/cinema.usc.edu\/events\/reservation.cfm?id=13787",
+        "website_url" => "http:\/\/cinema.usc.edu\/events\/event.cfm?id=13787",
+        "ticket_url" => "",
+        "campus" => "",
+        "venue" => "The Albert and Dana Broccoli Theatre, SCA 112, George Lucas Buil",
+        "building_code" => "",
+        "room" => "SCA 112",
+        "address" => "",
+        "feature_candidate" => 0,
+        "user_id" => 0,
+        "username" => "guest",
+        "display_name" => "guest",
+        "scratch_pad" => "",
+        "created" => "2013-10-10 16:16:01",
+        "updated" => "2013-10-14 12:33:20",
+        "publication_date" => null,
+        "calendar_id" => 32,
+        "parent_calendar_id" => 32,
+        "parent_calendar" => "USC Public Events"
+	);
+    $sql = 'INSERT INTO events (event_id, title, subtitle, summary, ' .
+        'description, ' .
+        'venue, campus, building_code, room, address, cost, ' .
+        'organizer, contact_phone, contact_email, ' .
+        'rsvp_email, rsvp_url, website_url, ticket_url, feature_candidate, ' .
+        'user_id, username, display_name, parent_calendar_id, parent_calendar, ' .
+        'scratch_pad, created, updated, publication_date) VALUES (' .
+        '?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '. 
+        '?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ' .
+        '?, ?, ?, ?, ?, ?, ?)';
+    $isOK = $db->executeSQL($sql, array(
+        $event['event_id'],
+        $event['title'],
+        $event['subtitle'],
+        $event['summary'],
+        $event['description'],
+        $event['venue'],
+        $event['campus'],
+        $event['building_code'],
+        $event['room'],
+        $event['address'],
+        $event['cost'],
+        
+        $event['organizer'],
+        $event['contact_phone'],
+        $event['contact_email'],
+        $event['rsvp_email'],
+        $event['rsvp_url'],
+        $event['website_url'],
+        $event['ticket_url'],
+        $event['feature_candidate'],
+        $event['user_id'],
+        $event['username'],
+        
+        $event['display_name'],
+        $event['parent_calendar_id'],
+        $event['parent_calendar'],
+        $event['scratch_pad'],
+        $event['created'],
+        $event['updated'],
+        $event['publication_date']), true);
+
+    
+    $sql = 'SELECT event_id FROM events WHERE event_id = ?';
+    $db->executeSQL($sql, array($event_id));
+    $row = $db->getRow();
+    $assert->ok($row !== false, "Should get back a row of data for $event_id");
+    $assert->equal($event_id, $row['event_id'], "Should get matching event id $event_id");
+    $sql = 'DELETE FROM events WHERE event_id = ?';
+    $r = $db->executeSQL($sql, array($event_id));
+    $assert->ok($r, "Should get true from delete event_id $event_id");
+    $db->close();
+    return "OK";
+}
+
+
 echo 'Starting [' . $argv[0] . '] ...' . PHP_EOL;
 if (version_compare(phpversion(), '5.5.0', '>=') === true) {
     echo "\tmysqli_* driver test\n";
@@ -91,6 +214,7 @@ if (version_compare(phpversion(), '5.5.0', '>=') === true) {
     testConstructor($MYSQL_CONNECTION_URL);
     testOpenClose($MYSQL_CONNECTION_URL);
     testSQL($MYSQL_CONNECTION_URL);
+    testEmbeddedQuestionMarks($MYSQL_CONNECTION_URL);
 }
 if (version_compare(phpversion(), '5.3.0', '>=') === true) {
     // Test mysql_* driver
@@ -99,6 +223,7 @@ if (version_compare(phpversion(), '5.3.0', '>=') === true) {
     testConstructor($MYSQL_CONNECTION_URL);
     testOpenClose($MYSQL_CONNECTION_URL);
     testSQL($MYSQL_CONNECTION_URL);
+    testEmbeddedQuestionMarks($MYSQL_CONNECTION_URL);
 } else {
     die("ERROR: this library assumes at least version 5.3.x of PHP.");
 }
