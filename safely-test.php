@@ -226,6 +226,22 @@ function testPRCEExpressions() {
     
 }
 
+function testMakeAs() {
+    global $assert;
+
+    $s = "one1";
+    $e = "one1";
+    $r = makeAs($s, "varname", false);
+    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+
+    $s = 1;
+    $e = false;
+    $r = makeAs($s, "varname", false);
+    $assert->notEqual($e, $r, "[$e] == [$r] for [$s]");
+
+    return "OK";
+}
+
 echo "Starting [" . $argv[0] . "]..." . PHP_EOL;
 
 $assert->ok(function_exists("defaultValidationMap"), "Should have a defaultValidationMap function defined.");
@@ -240,6 +256,7 @@ echo "\tTesting server processing: " . testSERVERProcessing() . PHP_EOL;
 echo "\tTesting safeStrToTime process: " . testSafeStrToTime() . PHP_EOL;
 echo "\tTesting Varname Lists process: " . testVarnameLists() . PHP_EOL;
 echo "\tTesting PRCE expressions process: " . testPRCEExpressions() . PHP_EOL;
+echo "\tTesting testMakeAs: " . testMakeAs() . PHP_EOL;
 
 ///$assert->fail("safeGET(), safePOST(), safeSERVER() tests not implemented.");
 echo "Success!" . PHP_EOL;
