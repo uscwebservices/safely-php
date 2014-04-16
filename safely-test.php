@@ -237,7 +237,7 @@ function testMakeAs() {
     $s = 1;
     $e = false;
     $r = makeAs($s, "varname", false);
-    $assert->notEqual($e, $r, "[$e] == [$r] for [$s]");
+    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
 
     return "OK";
 }

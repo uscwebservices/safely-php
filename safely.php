@@ -118,11 +118,17 @@ function makeAs ($value, $format, $verbose = false) {
         }
         return false;
     case 'varname_dash':
-        preg_match_all('/\w|[0-9]|_|-/', $value, $s);
-		return implode('', $s[0]);
+        if (is_string($value)) {
+            preg_match_all('/\w|[0-9]|_|-/', $value, $s);
+		    return implode('', $s[0]);
+        }
+        return false;
 	case 'varname':
-        preg_match_all('/\w|[0-9]|_/', $value, $s);
-		return implode('', $s[0]);
+        if (is_string($value)) {
+            preg_match_all('/\w|[0-9]|_/', $value, $s);
+		    return implode('', $s[0]);
+        }
+        return false;
 	case 'varname_list':
         $parts = explode(',', $value);
         for ($i = 0; $i < count($parts); $i += 1) {
