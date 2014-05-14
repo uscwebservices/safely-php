@@ -67,8 +67,12 @@ function fmtResponse($headers, $content) {
 /**
  * defaultRoute - this basically sets up a 404 as this is the default route for a request
  * that is not valid. It is also an example of the function signature expected to by executeRoute();
+ * @param $path_info - the path info value returned by $_SERVER['PATH_INFO']
+ * @param $options - optional information used for processing the route (e.g. get args, validation)
+ * @param $db - optional default open Db object or null (defaults to null)
+ * @return formatted response of header and content.
  */
-function defaultRoute($path_info, $options) {
+function defaultRoute($path_info, $options, $db = null) {
     $h = array();
     $h[] = fmtHeader("File Not Found", true, 404);
     $h[] = fmtHeader("Content-Type: text/plain", true);
