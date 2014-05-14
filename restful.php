@@ -97,19 +97,20 @@ function fmtRoute($path_reg_exp, $callback, $options = null) {
  * appropriate callbacks.
  * @param $path_info -  the urlencoded path to match, typically from $_SERVER['PATH_INFO'])
  * @param $routes - an array of routes constructed with fmtRoute().
+ * @param $db - an optional open Db object or null, defaults to null
  * @return a PHP Associative array suitable for processing with renderRoute();
  */
-function executeRoute($path_info, $routes) {
+function executeRoute($path_info, $routes, $db = null) {
     $path = urldecode($path_info);
     for ($i = 0; $i < count($routes); $i += 1) {
         if (preg_match($routes[$i]["path_reg_exp"], $path) === 1 ) {
             // We have a match so make the callback passing it any 
             // options defined in the route.
-            return $routes[$i]["callback"]($path, $routes[$i]["options"]);
+            return $routes[$i]["callback"]($path, $routes[$i]["options"], $db);
         }
     }
     // We really didn't find it so the default case is 404.
-    return defaultRoute($path, null);
+    return defaultRoute($path, null, $db);
 }
 
 /**
