@@ -61,33 +61,33 @@ function isValidUrl($s, $protocols = null) {
  * @return a validation map array
  */
 function defaultValidationMap ($obj, $do_urldecode = false) {
-	$is_integer = '/^[0-9]+$/';
-	$is_float = '/^[0-9]+\.[0-9]+$/';
-	$is_varname = '/^([A-Z,a-z]|_|[0-9])+$/';
-	$has_tags = '/(<[A-Z,a-z]+|<\/[A-Z,a-z]+>)/';
+    $is_integer = '/^[0-9]+$/';
+    $is_float = '/^[0-9]+\.[0-9]+$/';
+    $is_varname = '/^([A-Z,a-z]|_|[0-9])+$/';
+    $has_tags = '/(<[A-Z,a-z]+|<\/[A-Z,a-z]+>)/';
     $is_boolean = '/^(true|1|false|0)$/';
-	$validation_map = array();
-	
-	foreach ($obj as $key => $value) {
+    $validation_map = array();
+    
+    foreach ($obj as $key => $value) {
         if (isset($value)) {
-		    if (preg_match($is_integer, "$value") === 1) {
-			    $validation_map[$key] = "Integer";
-		    } else if (preg_match($is_float, "$value") === 1) {
-			    $validation_map[$key] = "Float";
+            if (preg_match($is_integer, "$value") === 1) {
+                $validation_map[$key] = "Integer";
+            } else if (preg_match($is_float, "$value") === 1) {
+                $validation_map[$key] = "Float";
             } else if (preg_match($is_boolean, "$value") === 1) {
                 $validation_map[$key] = "Boolean";
-		    } else if (preg_match($is_varname, "$value") === 1) {
-			    $validation_map[$key] = "Varname";
-		    } else if (preg_match($has_tags, "$value") === 1) {
-			    $validation_map[$key] = "HTML";
+            } else if (preg_match($is_varname, "$value") === 1) {
+                $validation_map[$key] = "Varname";
+            } else if (preg_match($has_tags, "$value") === 1) {
+                $validation_map[$key] = "HTML";
             } else if (isValidUrl($value) === true) { 
-			    $validation_map[$key] = "Url";
-		    } else {
-			    $validation_map[$key] = "Text";
-		    }
+                $validation_map[$key] = "Url";
+            } else {
+                $validation_map[$key] = "Text";
+            }
         }
-	}
-	return $validation_map;
+    }
+    return $validation_map;
 }
 
 /**
@@ -121,19 +121,19 @@ function escape($value) {
  * @return a safe version of value in the format requested or false if a problem.
  */
 function makeAs ($value, $format, $verbose = false) {
-	switch (strtolower($format)) {
-	case 'integer':
-		$i = intval($value);
-		if ("$i" == $value) {
-			return $i;
-		}
-		break;
-	case 'float':
-		$f = floatval($value);
-		if ("$f" == $value) {
-			return $f;
-		}
-		break;
+    switch (strtolower($format)) {
+    case 'integer':
+        $i = intval($value);
+        if ("$i" == $value) {
+            return $i;
+        }
+        break;
+    case 'float':
+        $f = floatval($value);
+        if ("$f" == $value) {
+            return $f;
+        }
+        break;
     case 'boolean':
         if ($value === 'true' || 
                 $value === '1') {
@@ -143,25 +143,25 @@ function makeAs ($value, $format, $verbose = false) {
     case 'varname_dash':
         if (is_string($value)) {
             preg_match_all('/\w|[0-9]|_|-/', $value, $s);
-		    return implode('', $s[0]);
+            return implode('', $s[0]);
         }
         return false;
-	case 'varname':
+    case 'varname':
         if (is_string($value)) {
             preg_match_all('/\w|[0-9]|_/', $value, $s);
-		    return implode('', $s[0]);
+            return implode('', $s[0]);
         }
         return false;
-	case 'varname_list':
+    case 'varname_list':
         $parts = explode(',', $value);
         for ($i = 0; $i < count($parts); $i += 1) {
            $parts[$i] = preg_replace('/\W/u', '', $parts[$i]);
         }
-		return implode(',', $parts);
-	case 'html':
-		return escape($value);
-	case 'text':
-		return escape(strip_tags($value));
+        return implode(',', $parts);
+    case 'html':
+        return escape($value);
+    case 'text':
+        return escape(strip_tags($value));
         case 'url':
         if (isValidUrl($value) === true) {
             return $value;
@@ -178,7 +178,7 @@ function makeAs ($value, $format, $verbose = false) {
     if ($preg_result === 1) {
         return $value;
     }
-	return false;
+    return false;
 }
 
 /**
@@ -189,23 +189,23 @@ function makeAs ($value, $format, $verbose = false) {
  * @return the sanitized version of $_GET.
  */
 function safeGET ($validation_map = NULL, $verbose = false) {
-	global $_GET;
-	$results = array();
+    global $_GET;
+    $results = array();
 
-	if ($validation_map === NULL) {
+    if ($validation_map === NULL) {
         // We support limited auto-detect types otherwise App
         // Code needs to supply a validation map.
-		$validation_map = defaultValidationMap($_GET, true);
-	}
-	forEach($validation_map as $key => $format) {
+        $validation_map = defaultValidationMap($_GET, true);
+    }
+    forEach($validation_map as $key => $format) {
         // Since RESTful style allows dashes in the URLs we should support
         // that in GET args.
-		$key = makeAs($key, "varname_dash", $verbose);
-		if (isset($_GET[$key])) {
-			$results[$key] = makeAs($_GET[$key], $format, $verbose);
-		}
-	}
-	return $results;
+        $key = makeAs($key, "varname_dash", $verbose);
+        if (isset($_GET[$key])) {
+            $results[$key] = makeAs($_GET[$key], $format, $verbose);
+        }
+    }
+    return $results;
 }
 
 /**
@@ -218,19 +218,19 @@ function safeGET ($validation_map = NULL, $verbose = false) {
  * @return the sanitized version of $_POST
  */
 function safePOST ($validation_map = NULL, $verbose = false) {
-	global $_POST;
-	$results = array();
-	
-	if ($validation_map === NULL) {
-		$validation_map = defaultValidationMap($_POST, false);
-	}
-	forEach($validation_map as $key => $format) {
-		$key = makeAs($key, "varname", $verbose);
-		if (isset($_POST[$key])) {
-			$results[$key] = makeAs($_POST[$key], $format, $verbose);
-		}
-	}
-	return $results;
+    global $_POST;
+    $results = array();
+    
+    if ($validation_map === NULL) {
+        $validation_map = defaultValidationMap($_POST, false);
+    }
+    forEach($validation_map as $key => $format) {
+        $key = makeAs($key, "varname", $verbose);
+        if (isset($_POST[$key])) {
+            $results[$key] = makeAs($_POST[$key], $format, $verbose);
+        }
+    }
+    return $results;
 }
 
 /**
@@ -243,18 +243,18 @@ function safePOST ($validation_map = NULL, $verbose = false) {
  * @return the sanitized version of $_SERVER
  */
 function safeSERVER ($validation_map = NULL, $verbose = false) {
-	global $_SERVER;
-	$results = array();
-	
-	if ($validation_map === NULL) {
-		$validation_map = defaultValidationMap($_SERVER, false);
-	}
-	forEach($validation_map as $key => $format) {
-		$key = makeAs($key, "varname", $verbose);
-		if (isset($_SERVER[$key])) {
-			$results[$key] = makeAs($_SERVER[$key], $format, $verbose);
-		}
-	}
-	return $results;
+    global $_SERVER;
+    $results = array();
+    
+    if ($validation_map === NULL) {
+        $validation_map = defaultValidationMap($_SERVER, false);
+    }
+    forEach($validation_map as $key => $format) {
+        $key = makeAs($key, "varname", $verbose);
+        if (isset($_SERVER[$key])) {
+            $results[$key] = makeAs($_SERVER[$key], $format, $verbose);
+        }
+    }
+    return $results;
 }
 ?>
