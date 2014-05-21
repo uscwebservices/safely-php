@@ -162,12 +162,11 @@ function makeAs ($value, $format, $verbose = false) {
 		return escape($value);
 	case 'text':
 		return escape(strip_tags($value));
-    case 'url':
-        error_log("DEBUG checking if $value is url");// DEBUG
+        case 'url':
         if (isValidUrl($value) === true) {
             return $value;
         }
-	}
+    }
     // We haven't found one of our explicit formats so...
     $preg_result = preg_match(">" . '^' . 
         str_replace(">", "\>", $format) . '$' . ">",
