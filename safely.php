@@ -29,6 +29,27 @@ function safeStrToTime ($s, $offset = false) {
 }
 
 /**
+ * isValidUrl - check to see if string parses into expected parts of a URL.
+ * @param $s - string to check
+ * @param $protocols - a list of support protocols (e.g. http, https, mailto)
+ * @return true if parses as URL with protocol or false otherwise
+ */
+function isValidUrl($s, $protocols = null) {
+    if ($protocols === null) {
+        $protocols = array('http', 'https', 'mailto', 'tel', 'ftp', 'sftp');
+    }
+    $parts = parse_url($s);
+    if ($parts !== false &&
+            isset($parts['scheme']) && 
+            isset($parts['host']) && 
+            in_array($parts['scheme'], $protocols) === true &&
+            trim($parts['host']) !== "") {
+        return true;
+    }
+    return false;
+}
+
+/**
  * defaultValidationMap - given an example $obj, calculate
  * a viable validation map to safely use with other requests.
  * Note this is a restricted map since auto-detection is not precise.
@@ -59,6 +80,8 @@ function defaultValidationMap ($obj, $do_urldecode = false) {
 			    $validation_map[$key] = "Varname";
 		    } else if (preg_match($has_tags, "$value") === 1) {
 			    $validation_map[$key] = "HTML";
+            } else if (isValidUrl($value) === true) { 
+			    $validation_map[$key] = "Url";
 		    } else {
 			    $validation_map[$key] = "Text";
 		    }
@@ -139,6 +162,11 @@ function makeAs ($value, $format, $verbose = false) {
 		return escape($value);
 	case 'text':
 		return escape(strip_tags($value));
+    case 'url':
+        error_log("DEBUG checking if $value is url");// DEBUG
+        if (isValidUrl($value) === true) {
+            return $value;
+        }
 	}
     // We haven't found one of our explicit formats so...
     $preg_result = preg_match(">" . '^' . 

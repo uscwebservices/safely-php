@@ -27,13 +27,15 @@ function testSupportFunctions () {
 	$_GET["html"] = "This is a <b>html</b>.";
 	$_GET["text"] = "This is plain text.";
     $_GET["boolean"] = "true";
+    $_GET["url"] = "http://www.usc.edu";
 	$expected_map = array(
 		"int" => "Integer",
 		"float" => "Float",
 		"varname" => "Varname",
 		"html" => "HTML",
 		"text" => "Text",
-        "boolean" => "Boolean"
+        "boolean" => "Boolean",
+        "url" => "Url"
 	);
 	$results = defaultValidationMap($_GET);
 	$assert->ok($results, "Should get back an array for defaultValidationMap()");
@@ -239,6 +241,16 @@ function testMakeAs() {
     $r = makeAs($s, "varname", false);
     $assert->equal($e, $r, "[$e] == [$r] for [$s]");
 
+    $s = "http://www.usc.edu";
+    $e = "http://www.usc.edu";
+    $r = makeAs($s, "Url", false);
+    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+
+    $s = "htp://www.usc.edu";
+    $e = false;
+    $r = makeAs($s, "Url", false);
+    $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+
     return "OK";
 }
 
@@ -249,6 +261,7 @@ $assert->ok(function_exists("safeGET"), "Should have a safeGET function defined.
 $assert->ok(function_exists("safePOST"), "Should have a safePOST function defined.");
 $assert->ok(function_exists("safeSERVER"), "Should have a safeSERVER function defined.");
 
+echo "\tTesting testMakeAs: " . testMakeAs() . PHP_EOL;
 echo "\tTesting support functions: " . testSupportFunctions() . PHP_EOL;
 echo "\tTesting get processing: " . testGETProcessing() . PHP_EOL;
 echo "\tTesting post processing: " . testPOSTProcessing() . PHP_EOL;
@@ -256,8 +269,5 @@ echo "\tTesting server processing: " . testSERVERProcessing() . PHP_EOL;
 echo "\tTesting safeStrToTime process: " . testSafeStrToTime() . PHP_EOL;
 echo "\tTesting Varname Lists process: " . testVarnameLists() . PHP_EOL;
 echo "\tTesting PRCE expressions process: " . testPRCEExpressions() . PHP_EOL;
-echo "\tTesting testMakeAs: " . testMakeAs() . PHP_EOL;
-
-///$assert->fail("safeGET(), safePOST(), safeSERVER() tests not implemented.");
 echo "Success!" . PHP_EOL;
 ?>
