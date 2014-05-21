@@ -162,7 +162,7 @@ function makeAs ($value, $format, $verbose = false) {
         return escape($value);
     case 'text':
         return escape(strip_tags($value));
-        case 'url':
+    case 'url':
         if (isValidUrl($value) === true) {
             return $value;
         }
