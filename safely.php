@@ -50,6 +50,32 @@ function isValidUrl($s, $protocols = null) {
 }
 
 /**
+ * isValidEmail - simple check for probably valid email address.
+ * The methodofy to validate turns the email address into a mailto url (if not one already)
+ * and then looks to see if we have a host and username set .
+ * @param $s - the string to check
+ * @return the validated string or false if it appears not to be an email address.
+ */
+function isValidEmail($s) {
+    if (substr_count($s, '@') !== 1) {
+        //FIXME: should allow @ inside quotes on usernames.
+        return false;
+    }
+    if (strpos($s, '://') === false) {
+        $last_at = strrpos($s, '@');
+        if ($last_at === false) {
+            return false;
+        }
+        $s = 'mailto://' . $s;
+    }
+    $parts = parse_url($s);
+    if (isset($parts['scheme']) && isset($parts['host']) && isset($parts['user'])) {
+        return true;
+    }
+    return false;
+}
+
+/**
  * defaultValidationMap - given an example $obj, calculate
  * a viable validation map to safely use with other requests.
  * Note this is a restricted map since auto-detection is not precise.
@@ -82,6 +108,8 @@ function defaultValidationMap ($obj, $do_urldecode = false) {
                 $validation_map[$key] = "HTML";
             } else if (isValidUrl($value) === true) { 
                 $validation_map[$key] = "Url";
+            } else if (isValidEmail($value) === true) {
+                $validation_map[$key] = "Email";
             } else {
                 $validation_map[$key] = "Text";
             }
@@ -164,6 +192,10 @@ function makeAs ($value, $format, $verbose = false) {
         return escape(strip_tags($value));
     case 'url':
         if (isValidUrl($value) === true) {
+            return $value;
+        }
+    case 'email':
+        if (isValidEmail($value) === true) {
             return $value;
         }
     }

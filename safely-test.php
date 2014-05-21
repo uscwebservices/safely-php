@@ -35,7 +35,8 @@ function testSupportFunctions () {
 		"html" => "HTML",
 		"text" => "Text",
         "boolean" => "Boolean",
-        "url" => "Url"
+        "url" => "Url",
+        "email" => "Email"
 	);
 	$results = defaultValidationMap($_GET);
 	$assert->ok($results, "Should get back an array for defaultValidationMap()");
@@ -251,6 +252,39 @@ function testMakeAs() {
     $r = makeAs($s, "Url", false);
     $assert->equal($e, $r, "[$e] == [$r] for [$s]");
 
+    $valid_email_examples = array(
+        'ttrojan@usc.edu',
+        'niceandsimple@example.com',
+        'very.common@example.com',
+        'a.little.lengthy.but.fine@dept.example.com',
+        'disposable.style.email.with+symbol@example.com',
+        'other.email-with-dash@example.com',
+        '"much.more unusual"@example.com',
+        '"very.unusual.@.unusual.com"@example.com',
+        '"very.(),:;<>[]\".VERY.\"very@\\ \"very\".unusual"@strange.example.com',
+        'admin@mailserver1',
+        //'!#$%&\'*+-/=?^_`{}|~@example.org',
+        //'"()<>[]:,;@\\\"!#$%&\'*+-/=?^_`{}| ~.a"@example.org',
+        '" "@example.org');
+    foreach ($valid_email_examples as $s) {
+        $e = $s;
+        $r = makeAs($s, "Email", false);
+        $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+    }
+    $invalid_email_examples = array(
+        '3@c@ttrojan@usc.edu',
+        'Abc.example.com',
+        'A@b@c@example.com',
+        'a"b(c)d,e:f;g<h>i[j\k]l@example.com',
+        'just"not"right@example.com',
+        'this is"not\allowed@example.com',
+        'this\ still\"not\\allowed@example.com'
+    );
+    foreach ($invalid_email_examples as $s) {
+        $e = false;
+        $r = makeAs($s, "Email", false);
+        $assert->equal($e, $r, "[$e] == [$r] for [$s]");
+    }
     return "OK";
 }
 
