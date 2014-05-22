@@ -31,19 +31,21 @@ function safeStrToTime ($s, $offset = false) {
 /**
  * isValidUrl - check to see if string parses into expected parts of a URL.
  * @param $s - string to check
- * @param $protocols - a list of support protocols (e.g. http, https, mailto)
- * @return true if parses as URL with protocol or false otherwise
+ * @param $protocols - the list of accepted protocols, defaults to http, https, mailto, tel, sftp, ftp
+ * @return true if a URL false otherwise
  */
 function isValidUrl($s, $protocols = null) {
+    if (filter_var($s, FILTER_VALIDATE_URL) === false) {
+        return false;
+    }
     if ($protocols === null) {
-        $protocols = array('http', 'https', 'mailto', 'tel', 'ftp', 'sftp');
+        $protocols = array(
+            'http', 'https', 'ftp', 'sftp', 'mailto', 'tel'
+        );
     }
     $parts = parse_url($s);
-    if ($parts !== false &&
-            isset($parts['scheme']) && 
-            isset($parts['host']) && 
-            in_array($parts['scheme'], $protocols) === true &&
-            trim($parts['host']) !== "") {
+    if (isset($parts['scheme']) && in_array($parts['scheme'], $protocols) &&
+        isset($parts['host']) && trim($parts['host']) !== "") {
         return true;
     }
     return false;
@@ -51,28 +53,14 @@ function isValidUrl($s, $protocols = null) {
 
 /**
  * isValidEmail - simple check for probably valid email address.
- * The methodofy to validate turns the email address into a mailto url (if not one already)
- * and then looks to see if we have a host and username set .
  * @param $s - the string to check
  * @return the validated string or false if it appears not to be an email address.
  */
 function isValidEmail($s) {
-    if (substr_count($s, '@') !== 1) {
-        //FIXME: should allow @ inside quotes on usernames.
+    if (filter_var($s, FILTER_VALIDATE_EMAIL) === false) {
         return false;
     }
-    if (strpos($s, '://') === false) {
-        $last_at = strrpos($s, '@');
-        if ($last_at === false) {
-            return false;
-        }
-        $s = 'mailto://' . $s;
-    }
-    $parts = parse_url($s);
-    if (isset($parts['scheme']) && isset($parts['host']) && isset($parts['user'])) {
-        return true;
-    }
-    return false;
+    return true;
 }
 
 /**
@@ -87,20 +75,17 @@ function isValidEmail($s) {
  * @return a validation map array
  */
 function defaultValidationMap ($obj, $do_urldecode = false) {
-    $is_integer = '/^[0-9]+$/';
-    $is_float = '/^[0-9]+\.[0-9]+$/';
     $is_varname = '/^([A-Z,a-z]|_|[0-9])+$/';
     $has_tags = '/(<[A-Z,a-z]+|<\/[A-Z,a-z]+>)/';
-    $is_boolean = '/^(true|1|false|0)$/';
     $validation_map = array();
     
     foreach ($obj as $key => $value) {
         if (isset($value)) {
-            if (preg_match($is_integer, "$value") === 1) {
+            if (filter_var($value, FILTER_VALIDATE_INT) !== false) {
                 $validation_map[$key] = "Integer";
-            } else if (preg_match($is_float, "$value") === 1) {
+            } else if (filter_var($value, FILTER_VALIDATE_FLOAT) !== false) {
                 $validation_map[$key] = "Float";
-            } else if (preg_match($is_boolean, "$value") === 1) {
+            } else if (filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null) {
                 $validation_map[$key] = "Boolean";
             } else if (preg_match($is_varname, "$value") === 1) {
                 $validation_map[$key] = "Varname";

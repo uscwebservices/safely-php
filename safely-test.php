@@ -28,6 +28,7 @@ function testSupportFunctions () {
 	$_GET["text"] = "This is plain text.";
     $_GET["boolean"] = "true";
     $_GET["url"] = "http://www.usc.edu";
+    $_GET["email"] = "ttrojan@usc.edu";
 	$expected_map = array(
 		"int" => "Integer",
 		"float" => "Float",
@@ -259,13 +260,8 @@ function testMakeAs() {
         'a.little.lengthy.but.fine@dept.example.com',
         'disposable.style.email.with+symbol@example.com',
         'other.email-with-dash@example.com',
-        '"much.more unusual"@example.com',
-        '"very.unusual.@.unusual.com"@example.com',
-        '"very.(),:;<>[]\".VERY.\"very@\\ \"very\".unusual"@strange.example.com',
-        'admin@mailserver1',
-        //'!#$%&\'*+-/=?^_`{}|~@example.org',
-        //'"()<>[]:,;@\\\"!#$%&\'*+-/=?^_`{}| ~.a"@example.org',
-        '" "@example.org');
+        '"very.(),:;<>[]\".VERY.\"very@\\ \"very\".unusual"@strange.example.com'
+    );
     foreach ($valid_email_examples as $s) {
         $e = $s;
         $r = makeAs($s, "Email", false);
