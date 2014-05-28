@@ -1,6 +1,5 @@
 <?php
 include('../safely.php');
-error_log("DEBUG post: " . print_r($_POST['the_selected'], true));
 if (isset($_POST['the_selected'])) {
     $the_selected = json_encode($_POST['the_selected'], JSON_PRETTY_PRINT);
 }
