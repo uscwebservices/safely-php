@@ -135,6 +135,26 @@ function escape($value) {
  */
 function makeAs ($value, $format, $verbose = false) {
     switch (strtolower($format)) {
+    case 'array_text':
+        if (!is_array($value)) {
+            return false;
+        }
+        $a = array();
+        foreach($value as $i => $val) {
+           $a[] = escape(strip_tags($val));
+        }
+        return $a;
+    case 'array_integers':
+        if (!is_array($value)) {
+            return false;
+        }
+        $a = array();
+        foreach($value as $i => $val) {
+            if (is_numeric($val) && intval($val) !== false) {
+               $a[] = intval($val); 
+            }
+        }
+        return $a;
     case 'integer':
         $i = intval($value);
         if ("$i" == $value) {

@@ -284,6 +284,27 @@ function testMakeAs() {
     return "OK";
 }
 
+function testSelectMultiple() {
+    global $assert;
+
+    $_POST = array(
+        'select_multiple' => array(
+            '1',
+            '2',
+            'The Fox'
+        )
+    );
+
+    $post = safePOST(array(
+        'select_multiple' => 'Array_Integers'
+    ));
+
+    $assert->equal($post['select_multiple'][0], '1', 'First element should be "1"');
+    $assert->equal($post['select_multiple'][1], '2', 'Second element should be "2"');
+    $assert->equal(isset($post['select_multiple'][2]), false, "Third element should not be there. " . print_r($post, true));
+    return "OK";
+}
+
 echo "Starting [" . $argv[0] . "]..." . PHP_EOL;
 
 $assert->ok(function_exists("defaultValidationMap"), "Should have a defaultValidationMap function defined.");
@@ -291,6 +312,7 @@ $assert->ok(function_exists("safeGET"), "Should have a safeGET function defined.
 $assert->ok(function_exists("safePOST"), "Should have a safePOST function defined.");
 $assert->ok(function_exists("safeSERVER"), "Should have a safeSERVER function defined.");
 
+echo "\tTesting testSelectMultiple: " . testSelectMultiple() . PHP_EOL;
 echo "\tTesting testMakeAs: " . testMakeAs() . PHP_EOL;
 echo "\tTesting support functions: " . testSupportFunctions() . PHP_EOL;
 echo "\tTesting get processing: " . testGETProcessing() . PHP_EOL;
