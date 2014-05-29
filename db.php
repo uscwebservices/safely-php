@@ -180,6 +180,7 @@ class Db {
                     $this->rows_affected = mysql_affected_rows($this->link);
                     $result = false;
             }
+            $this->last_insert_id = mysql_insert_id($this->link);
             $this->rows = array();
             if ($result !== false) {
                 while($row = mysql_fetch_assoc($qry)) {
