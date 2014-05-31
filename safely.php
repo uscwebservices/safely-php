@@ -17,7 +17,7 @@
  * @param $utf2html_string - the string to convert.
  * @return the converted string.
  */
-function utf2html ($utf2html_string) {
+function utf2html ($utf2html_string, $is_hex = false) {
     $f = 0xffff;
     $convmap = array(
     /* <!ENTITY % HTMLlat1 PUBLIC "-//W3C//ENTITIES Latin 1//EN//HTML">
@@ -50,7 +50,8 @@ function utf2html ($utf2html_string) {
     8201, 8201, 0, $f, 8204, 8207, 0, $f, 8211, 8212, 0, $f,
     8216, 8218, 0, $f, 8218, 8218, 0, $f, 8220, 8222, 0, $f,
     8224, 8225, 0, $f, 8240, 8240, 0, $f, 8249, 8250, 0, $f,
-    8364, 8364, 0, $f);
+    8364, 8364, 0, $f, $is_hex);
+    // FIXME: need to strip \u0080, \u009c, \u009d ...
     return mb_encode_numericentity($utf2html_string, $convmap, "UTF-8");
 }
 

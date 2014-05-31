@@ -313,6 +313,13 @@ function testUTF2HTML() {
     $e = '<a href="#jim">Jim</a> said, &#8220;I&apos;s here now.&#8221;';
     $r = utf2html($s);
     $assert->equal($e, $r, "[$e] != [$s]");
+    /*FIXME: not sure a solutio for this one yet. 
+    // Strip \u009c, \u009d, \u0080
+    $s = '&#195;&#162;&#194;\u0080&#194;\u009cPicturing Ovid in Pompeii&#195;&#162;&#194;\u0080&#194;\u009d Peter Knox (University of Colorado)';
+    $e = '&#195;&#162;&#194;&#194;Picturing Ovid in Pompeii&#195;&#162;&#194;#194; Peter Knox (University of Colorado)';
+    $r = utf2html($s);
+    $assert->equal($e, $r, "[$e] != [$s]");
+    */
     return "OK";
 }
 
