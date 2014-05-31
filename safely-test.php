@@ -332,6 +332,6 @@ echo "\tTesting server processing: " . testSERVERProcessing() . PHP_EOL;
 echo "\tTesting safeStrToTime process: " . testSafeStrToTime() . PHP_EOL;
 echo "\tTesting Varname Lists process: " . testVarnameLists() . PHP_EOL;
 echo "\tTesting PRCE expressions process: " . testPRCEExpressions() . PHP_EOL;
-echo "\tTesting testUTF2HTML(): " . testUTF2HTML() . PHP_EOL;
+echo "\tTesting testUTF2HTML: " . testUTF2HTML() . PHP_EOL;
 echo "Success!" . PHP_EOL;
 ?>
