@@ -305,6 +305,17 @@ function testSelectMultiple() {
     return "OK";
 }
 
+function testUTF2HTML() {
+    global $assert;
+    
+    $s = '<a href="#jim">Jim</a> said, ' . html_entity_decode('&ldquo;') . 'I' . 
+        html_entity_decode('&apos;') . 's here now.' . html_entity_decode('&rdquo;');
+    $e = '<a href="#jim">Jim</a> said, &#8220;I&apos;s here now.&#8221;';
+    $r = utf2html($s);
+    $assert->equal($e, $r, "[$e] != [$s]");
+    return "OK";
+}
+
 echo "Starting [" . $argv[0] . "]..." . PHP_EOL;
 
 $assert->ok(function_exists("defaultValidationMap"), "Should have a defaultValidationMap function defined.");
@@ -321,5 +332,6 @@ echo "\tTesting server processing: " . testSERVERProcessing() . PHP_EOL;
 echo "\tTesting safeStrToTime process: " . testSafeStrToTime() . PHP_EOL;
 echo "\tTesting Varname Lists process: " . testVarnameLists() . PHP_EOL;
 echo "\tTesting PRCE expressions process: " . testPRCEExpressions() . PHP_EOL;
+echo "\tTesting testUTF2HTML: " . testUTF2HTML() . PHP_EOL;
 echo "Success!" . PHP_EOL;
 ?>
