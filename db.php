@@ -173,8 +173,14 @@ class Db {
             }
 
             $qry = mysql_query($sql, $this->link);
+            if ($verbose === true && mysql_errno($this->link) !== 0) {
+                error_log("SQL MySQL Error: " . mysql_error($this->link));
+            }
             if (stripos($sql, 'SELECT') === 0) {
                     $this->rows_affected = mysql_num_rows($qry);
+                    if ($verbose === true) {
+                        error_log("SQL num_rows(): " . $this->rows_affected);
+                    }
                     $result = true;
             } else {
                     $this->rows_affected = mysql_affected_rows($this->link);
