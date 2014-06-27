@@ -20,6 +20,18 @@ if (file_exists('con-test.php')) {
     die("You need to create con-test.php to test the db library." . PHP_EOL);
 }
 
+function testLogOutput ($MYSQL_CONNECTION_URL) {
+    global $assert;
+
+    $db = new Db($MYSQL_CONNECTION_URL);
+    $db->setLog("echo");
+    $db->logIt("This is my log message via echo", true);
+    echo 'Should have seen a line logged with "echo" with <pre> elements.' . PHP_EOL;
+    $db->setLog("error_log");
+    $db->logIt("This is my log message via error_log()", true);
+    echo 'Should have seen a line logged to error_log().' . PHP_EOL;
+    return "Requires manual visual check";
+}
 
 function testConstructor ($MYSQL_CONNECTION_URL) {
     global $assert;
@@ -227,5 +239,6 @@ if (version_compare(phpversion(), '5.3.0', '>=') === true) {
 } else {
     die("ERROR: this library assumes at least version 5.3.x of PHP.");
 }
+testLogOutput($MYSQL_CONNECTION_URL);
 echo 'Success!' . PHP_EOL;
 ?>

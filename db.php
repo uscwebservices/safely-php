@@ -34,15 +34,31 @@ class Db {
 
     /**
      * setLog - set the destination of the log output - browser or error_log.
-     * @param $target - either "browser" or "error_log"
+     * @param $target - either "echo" or "error_log"
      * @return new log target
      */
     public function setLog($target) {
-        if ($target === 'browser' || $target === 'error_log') {
+        if ($target === 'echo' || $target === 'error_log') {
             $this->log_output = $target;
         }
         return $this->log_output;
     }
+
+    /**
+     * logIt - emmit a log message if verbose is true
+     * @param $msg - the message to emmit
+     * @param $verbose - true, emmit message, otherwise ignore
+     */
+    public function logIt($msg, $verbose) {
+        if ($verbose === true) {
+            if ($this->log_output === 'error_log') {
+                error_log($msg);
+            } else {
+                echo '<pre>Log: ' . $msg . '</pre>' . PHP_EOL;
+            }
+        }
+    }
+
 
     /**
      * open - open a database connection (RDBMS/NoSQL).
@@ -94,16 +110,6 @@ class Db {
         }
         error_log("Can't close db " . $this->db_name);
         return false;
-    }
-
-    function logIt($msg, $verbose) {
-        if ($verbose === true) {
-            if ($this->log_output === 'error_log') {
-                error_log($msg);
-            } else {
-                echo '<pre>Log: ' . $msg . '</pre>' . PHP_EOL;
-            }
-        }
     }
 
     /**
