@@ -29,6 +29,19 @@ class Db {
         $this->last_insert_id = 0;
         $this->rows = array();
         $this->rows_affected = 0;
+        $this->log_output = 'error_log';
+    }
+
+    /**
+     * setLog - set the destination of the log output - browser or error_log.
+     * @param $target - either "browser" or "error_log"
+     * @return new log target
+     */
+    public function setLog($target) {
+        if ($target === 'browser' || $target === 'error_log') {
+            $this->log_output = $target;
+        }
+        return $this->log_output;
     }
 
     /**
@@ -85,7 +98,11 @@ class Db {
 
     function logIt($msg, $verbose) {
         if ($verbose === true) {
-            error_log($msg);
+            if ($this->log_output === 'error_log') {
+                error_log($msg);
+            } else {
+                echo '<pre>Log: ' . $msg . '</pre>' . PHP_EOL;
+            }
         }
     }
 
@@ -133,9 +150,7 @@ class Db {
                     $this->rows_affected = mysqli_stmt_affected_rows($stmt);
                     $result = false;
             }
-            if ($verbose === true) {
-                error_log("Prepared SQL: " . print_r($stmt, true));
-            }
+            $this->logIt("Prepared SQL: " . print_r($stmt, true), $verbose);
             $this->last_insert_id = mysqli_insert_id($this->link);
 
             // Now gather up the results, close the statement.
@@ -168,19 +183,15 @@ class Db {
                 }
                 $sql = implode('', $assembled);
             }
-            if ($verbose === true) {
-                error_log("SQL: " . $sql);
-            }
+            $this->logIt("SQL: " . $sql, $verbose);
 
             $qry = mysql_query($sql, $this->link);
-            if ($verbose === true && mysql_errno($this->link) !== 0) {
-                error_log("SQL MySQL Error: " . mysql_error($this->link));
+            if (mysql_errno($this->link) !== 0) {
+                $this->logIt("SQL MySQL Error: " . mysql_error($this->link), $verbose);
             }
             if (stripos($sql, 'SELECT') === 0) {
                     $this->rows_affected = mysql_num_rows($qry);
-                    if ($verbose === true) {
-                        error_log("SQL num_rows(): " . $this->rows_affected);
-                    }
+                    $this->logIt("SQL num_rows(): " . $this->rows_affected, $verbose);
                     $result = true;
             } else {
                     $this->rows_affected = mysql_affected_rows($this->link);
