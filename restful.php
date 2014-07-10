@@ -139,10 +139,22 @@ function renderHeaders($headers) {
 /**
  * renderRoute - emmit headers and contents described by the results of executeRoute()
  * @param $route_results
+ * @param $use_gzip - if true gzip the output, defaults to false
  * @sideeffects emits headers and sends content to stdout
  * @return always true
  */
-function renderRoute($route_results) {
+function renderRoute($route_results, $use_gzip = false) {
+    if ($use_gzip === true) {
+        // Add the gzip compression
+        $headers = $route_results['HTTP_HEADER'];
+        $gzipoutput = gzencode($route_results['HTTP_CONTENT'], 6); 
+        $headers[] = fmtHeader('Content-Encoding: gzip');
+        $headers[] = fmtHeader('Content-Length: ' . strlen($gzipoutput));
+        renderHeaders($headers);
+        echo $gzipoutput;
+        return true;
+    }   
+
     // Output headers
     renderHeaders($route_results['HTTP_HEADER']);
     // Out put content.
