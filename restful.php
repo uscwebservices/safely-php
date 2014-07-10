@@ -138,25 +138,38 @@ function renderHeaders($headers) {
 
 /**
  * renderRoute - emmit headers and contents described by the results of executeRoute()
+ * renderRoute will calculate the Expires, Cache-Control and Etag for you. 
+ * It optionally can gzip the contents as well with the $user_gzip option.
+ *
  * @param $route_results
  * @param $use_gzip - if true gzip the output, defaults to false
  * @sideeffects emits headers and sends content to stdout
  * @return always true
  */
 function renderRoute($route_results, $use_gzip = false) {
+    if (isset($route_results['HTTP_HEADER'])) {
+        $headers = $route_results['HTTP_HEADER'];
+    } else {
+        $headers = array();
+    }
+
+    // Set the expiration, cache-content and etag headers
+    $headers[] = fmtHeader('Expires: ' . date(DATE_RFC1123, strtotime("+1 year"))); 
+    $headers[] = fmtHeader('Cache-Control: max-age=36000, s-maxage=360000'); 
+    $headers[] = fmtHeader('ETag: ' . md5($content));
+
     if ($use_gzip === true) {
         // Add the gzip compression
-        $headers = $route_results['HTTP_HEADER'];
         $gzipoutput = gzencode($route_results['HTTP_CONTENT'], 6); 
         $headers[] = fmtHeader('Content-Encoding: gzip');
         $headers[] = fmtHeader('Content-Length: ' . strlen($gzipoutput));
         renderHeaders($headers);
         echo $gzipoutput;
         return true;
-    }   
+    }
 
     // Output headers
-    renderHeaders($route_results['HTTP_HEADER']);
+    renderHeaders($headers);
     // Out put content.
     echo $route_results["HTTP_CONTENT"];
     return true;
