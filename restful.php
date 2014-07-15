@@ -153,10 +153,14 @@ function renderRoute($route_results, $use_gzip = false) {
         $headers = array();
     }
 
-    // Set the expiration, cache-content and etag headers
-    $headers[] = fmtHeader('Expires: ' . date(DATE_RFC1123, strtotime("+1 year"))); 
-    $headers[] = fmtHeader('Cache-Control: max-age=36000, s-maxage=360000'); 
-    $headers[] = fmtHeader('ETag: ' . md5($content));
+    if (isset($route_results['HTTP_CONTENT'])) {
+        $content = $route_results['HTTP_CONTENT'];
+
+        // Set the expiration, cache-content and etag headers
+        $headers[] = fmtHeader('Expires: ' . date(DATE_RFC1123, strtotime("+1 year"))); 
+        $headers[] = fmtHeader('Cache-Control: max-age=36000, s-maxage=360000'); 
+        $headers[] = fmtHeader('ETag: ' . md5($content));
+    }
 
     if ($use_gzip === true) {
         // Add the gzip compression
