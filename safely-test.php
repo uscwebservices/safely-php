@@ -320,6 +320,23 @@ function testUTF2HTML() {
     $r = utf2html($s);
     $assert->equal($e, $r, "[$e] != [$s]");
     */
+
+    $s = '<a href="mylink.html">My Link</a>';
+    $e = '<a href="mylink.html">My Link</a>';
+    $r = utf2html($s);
+    $assert->equal($e, $r, "[$e] != [$s]");
+    return "OK";
+}
+
+function testAttributeCleaning() {
+    global $assert;
+    $s = '<div><a href="mylink.html" title="fred" style="font-size:20">Fred</a></div>';
+    $e = '<div><a href="mylink.html" title="fred">Fred</a></div>';
+    $r = makeAs($s, "HTML");
+    //echo 'DEBUG make as HTML: ' . $s . ' -> ' . $r .PHP_EOL;
+    //$assert->equal($e, $r, "[$e] != [$s]");
+    $pos = strpos($r, 'style=');
+    $assert->equal($pos, false, "[$e] != [$s]");
     return "OK";
 }
 
@@ -340,5 +357,6 @@ echo "\tTesting safeStrToTime process: " . testSafeStrToTime() . PHP_EOL;
 echo "\tTesting Varname Lists process: " . testVarnameLists() . PHP_EOL;
 echo "\tTesting PRCE expressions process: " . testPRCEExpressions() . PHP_EOL;
 echo "\tTesting testUTF2HTML: " . testUTF2HTML() . PHP_EOL;
+echo "\tTesting testAttributeCleaning: " . testAttributeCleaning() . PHP_EOL;
 echo "Success!" . PHP_EOL;
 ?>

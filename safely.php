@@ -149,6 +149,41 @@ function defaultValidationMap ($obj, $do_urldecode = false) {
 }
 
 /**
+ * strip_attributes - remove attributes from HTML elements except for href, src, title
+ * Based on stackexchange discussions at 
+ * http://stackoverflow.com/questions/770219/how-can-i-remove-attributes-from-an-html-tag
+ *
+ * @param $s - the HTML string to be cleaned
+ * @param $allowedattr - an array of the allowed attributes (e.g. href, src, title, alt)
+ * @return HTML string with only allowed attributes.
+ */
+function strip_attributes($s, $allowedattr = array("href", "src", "title", "alt")) {
+    if (preg_match_all("/<[^>]*\\s([^>]*)\\/*>/msiU", $s, $res, PREG_SET_ORDER)) {
+       foreach ($res as $r) {
+           $tag = $r[0];
+           $attrs = array();
+           preg_match_all("/\\s.*=(['\"]).*\\1/msiU", " " . $r[1], $split, PREG_SET_ORDER);
+           foreach ($split as $spl) {
+               $attrs[] = $spl[0];
+           }
+           $newattrs = array();
+           foreach ($attrs as $a) {
+               $tmp = explode("=", $a);
+               if (trim($a) != "" && (!isset($tmp[1]) || (trim($tmp[0]) != "" && !in_array(strtolower(trim($tmp[0])), $allowedattr)))) {
+                   // All attribute
+               } else {
+                   $newattrs[] = $a;
+               }
+           }
+           $attrs = implode(" ", $newattrs);
+           $rpl = str_replace($r[1], $attrs, $tag);
+           $s = str_replace($tag, $rpl, $s);
+       }
+  }
+  return $s;
+}
+
+/**
  * replace non-ascii characters with hex code
  * this replace mysql_real_escape_string because this requires a mysql
  * connection to exist.
@@ -237,7 +272,7 @@ function makeAs ($value, $format, $verbose = false) {
         }
         return implode(',', $parts);
     case 'html':
-        return escape($value);
+        return escape(strip_attributes($value));
     case 'text':
         return escape(strip_tags($value));
     case 'url':
