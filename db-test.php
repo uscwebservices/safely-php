@@ -101,7 +101,7 @@ function testEmbeddedQuestionMarks($MYSQL_CONNECTION_URL) {
     
     $db = new Db($MYSQL_CONNECTION_URL);
     $db->open();
-    $sql = 'CREATE TABLE IF NOT EXISTS events (' .
+    $sql = 'CREATE TABLE IF NOT EXISTS test_events (' .
             'event_id INTEGER AUTO_INCREMENT PRIMARY KEY, '.
             'title VARCHAR(255) NOT NULL, ' .
             'subtitle VARCHAR(255) DEFAULT "", ' .
@@ -134,10 +134,10 @@ function testEmbeddedQuestionMarks($MYSQL_CONNECTION_URL) {
     $event_id =  906300;
     $event = array(
         "event_id" => 906300,
-        "title" => null,
+        "title" => "",
         "subtitle" => "USC School of Cinematic Arts",
-        "summary" => null,
-        "description" => null,
+        "summary" => "",
+        "description" => "",
         "cost" => "Free",
         "organizer" => "aago@cinema.usc.edu",
         "contact_phone" => "(213) 740-2330",
@@ -158,12 +158,12 @@ function testEmbeddedQuestionMarks($MYSQL_CONNECTION_URL) {
         "scratch_pad" => "",
         "created" => "2013-10-10 16:16:01",
         "updated" => "2013-10-14 12:33:20",
-        "publication_date" => null,
+        "publication_date" => "0001-01-01 00:00:00",
         "calendar_id" => 32,
         "parent_calendar_id" => 32,
         "parent_calendar" => "USC Public Events"
 	);
-    $sql = 'INSERT INTO events (event_id, title, subtitle, summary, ' .
+    $sql = 'INSERT INTO test_events (event_id, title, subtitle, summary, ' .
         'description, ' .
         'venue, campus, building_code, room, address, cost, ' .
         'organizer, contact_phone, contact_email, ' .
@@ -206,12 +206,12 @@ function testEmbeddedQuestionMarks($MYSQL_CONNECTION_URL) {
         $event['publication_date']), true);
 
     
-    $sql = 'SELECT event_id FROM events WHERE event_id = ?';
+    $sql = 'SELECT event_id FROM test_events WHERE event_id = ?';
     $db->executeSQL($sql, array($event_id));
     $row = $db->getRow();
     $assert->ok($row !== false, "Should get back a row of data for $event_id");
     $assert->equal($event_id, $row['event_id'], "Should get matching event id $event_id");
-    $sql = 'DELETE FROM events WHERE event_id = ?';
+    $sql = 'DELETE FROM test_events WHERE event_id = ?';
     $r = $db->executeSQL($sql, array($event_id));
     $assert->ok($r, "Should get true from delete event_id $event_id");
     $db->close();
