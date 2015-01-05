@@ -132,9 +132,9 @@ function defaultValidationMap ($obj, $do_urldecode = false) {
                 $validation_map[$key] = "Float";
             } else if (filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null) {
                 $validation_map[$key] = "Boolean";
-            } else if (gettype($value) === "string" && preg_match($is_varname, "$value") === 1) {
+            } else if (gettype($value) === "string" && preg_match($is_varname, $value) === 1) {
                 $validation_map[$key] = "Varname";
-            } else if (gettype($value) === "string" && preg_match($has_tags, "$value") === 1) {
+            } else if (gettype($value) === "string" && preg_match($has_tags, $value) === 1) {
                 $validation_map[$key] = "HTML";
             } else if (isValidUrl($value) === true) { 
                 $validation_map[$key] = "Url";
@@ -272,14 +272,15 @@ function makeAs ($value, $format, $verbose = false) {
         }
         return implode(',', $parts);
     case 'html':
-        return escape(strip_attributes($value));
-    case 'text':
-        if(gettype($value) == "string") {
-            return escape(strip_tags($value));
-        } else {
-            error_log("value is not a string, can't escape:" . gettype($value) . " --> " . print_r($value, true));
-            return "";
+        if (gettype($value) === "string") {
+           return escape(strip_attributes($value));
         }
+        return false;
+    case 'text':
+        if(gettype($value) === "string") {
+            return escape(strip_tags($value));
+        }
+        return false;
     case 'url':
         if (isValidUrl($value) === true) {
             return $value;
