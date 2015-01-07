@@ -3,7 +3,7 @@
  * safely_test.php - varify that the safely functions can protected
  * against expected vunerabilities.
  */
-
+define("SAFELY_ALLOW_UNSAFE", true);
 if (php_sapi_name() !== "cli") {
 	echo "Must be run from the command line." . PHP_EOL;
 	exit(1);
@@ -340,12 +340,60 @@ function testAttributeCleaning() {
     return "OK";
 }
 
+function testSafeJSON() {
+    global $assert;
+
+    $validation_map = array(
+        'return_to_url' => '(\w+|\.|-|[0-9])+',
+        'event_id' => 'Integer',
+        'calendar_id' => 'Integer',
+        'title' => 'text',
+        'subtitle' => 'HTML',
+        'summary' => 'HTML',
+        'description' => 'HTML',
+        'dates' => 'Text', 
+        'start' => 'Text',
+        'end' => 'Text',
+        'venue' => 'Text',
+        'building_code' => 'Text',
+        'campus' => 'Text',
+        'room' => 'Text',
+        'address' => 'Text',
+        'url' => 'url',
+        'contact_phone' => 'Text',
+        'sponsors' => 'Text',
+        'cost' => 'Text',
+        'rsvp_email' => 'email',
+        'rsvp_url' => 'url',
+        'ticket_url' => 'url',
+        'categories' => 'Text',
+        'audiences' => 'Text',
+        'notes' => 'Text',
+        'contact_email' => 'email',
+        'feature_candidate' => 'Boolean');
+
+    $badjson =<<<BAD_JSON
+{"event_id":"913298","title":"<a href =\"javascript:whs(1)\">click<\/a>","subtitle":"","summary":"<script>function whs(val) { assert(val); }</script>click<a  href =\"javascript:whs(1)\">click<\/a>","description":"<a  href =\"javascript:whs(1)\">click<\/a>","cost":"","contact_phone":"","contact_email":"","rsvp_email":"","rsvp_url":"","url":"","ticket_url":"","campus":"University Park","venue":"125th Anniversary Fountain","building_code":"","room":"1234","address":"125th Anniversary Fountain","feature_candidate":"0","username":"dd_064","name":"WhiteHat Audit Account","scratch_pad":"","created":"2014-11-06 12:52:50","updated":"2014-11-06 12:52:50","publication_date":"0000-00-00 00:00:00","parent_calendar_id":"32","parent_calendar":"USC Public Events","sponsors":[],"audiences":[],"schedule":"11\/25\/2014: 03:00 - 05:00","dates":"11\/25\/2014","occurrences":[{"start":"2014-11-25 03:00:00","end":"2014-11-25 05:00:59"}],"first_occurrence":"2014-11-25 03:00:00","last_occurrence":"2014-11-25 03:00:00","next_occurrence":"2014-11-25 03:00:00","categories":{"32":["Theater"]},"attachments":{"32":{"image_o":{"mime_type":"image\/jpeg","url":"https:\/\/web-app.usc.edu\/event-images\/32\/913298\/whs_xss_test.jpg"}}},"status":{"32":{"status":"draft","calendar_id":"32"}},"start":"3:00","end":"5:00","error_status":"OK"}
+BAD_JSON;
+
+   $result = json_decode($badjson, true);
+   $result = safeJSON($badjson, $validation_map, false);
+   $assert->ok(is_array($result), "Should get an array type back");
+   $assert->ok(is_integer($result['event_id']), "Should have an integer value for event_id");
+   $assert->equal($result['event_id'], 913298, "have an event id of 913298");
+   $assert->ok(is_string($result['title']), "title should be string " . gettype($result['title']));
+   $assert->equal($result['title'], "click", "title wrong.");
+   $assert->equal(strpos($result['summary'], "<script>"), false, "Should move script element");
+   return "OK";
+}
+
 echo "Starting [" . $argv[0] . "]..." . PHP_EOL;
 
 $assert->ok(function_exists("defaultValidationMap"), "Should have a defaultValidationMap function defined.");
 $assert->ok(function_exists("safeGET"), "Should have a safeGET function defined.");
 $assert->ok(function_exists("safePOST"), "Should have a safePOST function defined.");
 $assert->ok(function_exists("safeSERVER"), "Should have a safeSERVER function defined.");
+$assert->ok(function_exists("safeJSON"), "Should have a safeJSON function defined.");
 
 echo "\tTesting testSelectMultiple: " . testSelectMultiple() . PHP_EOL;
 echo "\tTesting testMakeAs: " . testMakeAs() . PHP_EOL;
@@ -358,5 +406,6 @@ echo "\tTesting Varname Lists process: " . testVarnameLists() . PHP_EOL;
 echo "\tTesting PRCE expressions process: " . testPRCEExpressions() . PHP_EOL;
 echo "\tTesting testUTF2HTML: " . testUTF2HTML() . PHP_EOL;
 echo "\tTesting testAttributeCleaning: " . testAttributeCleaning() . PHP_EOL;
+echo "\tTesting testSafeJSON: " . testSafeJSON() . PHP_EOL;
 echo "Success!" . PHP_EOL;
 ?>

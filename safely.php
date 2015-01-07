@@ -8,7 +8,15 @@
  * copyright (c) 2012 all rights reserved
  * University of Southern California
  */
+if (defined("SAFELY_ALLOW_UNSAFE") === false) {
+    define("SAFELY_ALLOW_UNSAFE", false);
+}
+if (defined("SAFELY_ALLOWED_HTML") === false) {
+    // List of safe elements derived from https://developer.mozilla.org/en-US/docs/Web/HTML/Element
+    $safe_element_list = '<a><abbr><acronym><address><area><article><aside><audio><b><base><basefont><bdi><bdo><bgsound><big><blink><blockquote><body><br><button><canvas><caption><center><cite><code><col><colgroup><content><data><datalist><dd><decorator><del><details><dfn><dialog><dir><div><dl><dt><element><em><embed><fieldset><figcaption><figure><font><footer><form><frame><frameset><h1><h2><h3><h4><h5><h6><head><header><hgroup><hr><html><i><iframe><img><input><ins><isindex><kbd><keygen><label><legend><li><link><listing><main><map><mark><marquee><menu><menuitem><meta><meter><nav><nobr><noframes><noscript><object><ol><optgroup><option><output><p><param><picture><plaintext><pre><progress><q><rp><rt><ruby><s><samp><section><select><shadow><small><source><spacer><span><strike><strong><style><sub><summary><sup><table><tbody><td><template><textarea><tfoot><th><thead><time><title><tr><track><tt><u><ul><var><video><wbr><xmp>';
 
+    define("SAFELY_ALLOWED_HTML", $safe_element_list); 
+}
 
 /**
  * utf2html - convert UTF-8 characters to appropriate HTML entities.
@@ -273,7 +281,7 @@ function makeAs ($value, $format, $verbose = false) {
         return implode(',', $parts);
     case 'html':
         if (gettype($value) === "string") {
-           return escape(strip_attributes($value));
+           return escape(strip_attributes(strip_tags($value, SAFELY_ALLOWED_HTML)));
         }
         return false;
     case 'text':
@@ -307,7 +315,8 @@ function makeAs ($value, $format, $verbose = false) {
 /**
  * safeGET - if necessary generate a default validation object and
  * process the global $_GET returning a sanitized version.
- * @param $validation_map - You can supply an explicit validation map.
+ * @param $validation_map - You should supply an explicit validation map. Will allow NULL
+ * if SAFELY_ALLOW_UNSAFE defined with true.
  * @param $verbose - log regexp makeAs results. (default is false)
  * @return the sanitized version of $_GET.
  */
@@ -315,12 +324,12 @@ function safeGET ($validation_map = NULL, $verbose = false) {
     global $_GET;
     $results = array();
 
-    if ($validation_map === NULL) {
+    if (SAFELY_ALLOW_UNSAFE === true && $validation_map === NULL) {
         // We support limited auto-detect types otherwise App
         // Code needs to supply a validation map.
         $validation_map = defaultValidationMap($_GET, true);
     }
-    forEach($validation_map as $key => $format) {
+    foreach($validation_map as $key => $format) {
         // Since RESTful style allows dashes in the URLs we should support
         // that in GET args.
         $key = makeAs($key, "varname_dash", $verbose);
@@ -334,7 +343,8 @@ function safeGET ($validation_map = NULL, $verbose = false) {
 /**
  * safePOST - if necessary generate a default validation object and
  * process the global $_POST returning a sanitized version.
- * @param $validation_map - You can supply an explicit validation map.
+ * @param $validation_map - You should supply an explicit validation map. Will allow NULL
+ * if SAFELY_ALLOW_UNSAFE defined with true.
  * @return false if their is a problem otherwise the sanitized verion of
  * $_POST.
  * @param $verbose - log regexp makeAs results. (default is false)
@@ -344,10 +354,10 @@ function safePOST ($validation_map = NULL, $verbose = false) {
     global $_POST;
     $results = array();
     
-    if ($validation_map === NULL) {
+    if (SAFELY_ALLOW_UNSAFE === true && $validation_map === NULL) {
         $validation_map = defaultValidationMap($_POST, false);
     }
-    forEach($validation_map as $key => $format) {
+    foreach($validation_map as $key => $format) {
         $key = makeAs($key, "varname", $verbose);
         if (isset($_POST[$key])) {
             $results[$key] = makeAs($_POST[$key], $format, $verbose);
@@ -359,7 +369,8 @@ function safePOST ($validation_map = NULL, $verbose = false) {
 /**
  * safeSERVER - if necessary generate a default validation object and
  * process the global $_SERVER returning a sanitized version.
- * @param $validation_map - You can supply an explicit validation map.
+ * @param $validation_map - You should supply an explicit validation map. Will allow NULL
+ * if SAFELY_ALLOW_UNSAFE defined with true.
  * @return false if their is a problem otherwise the sanitized verion of
  * $_SERVER.
  * @param $verbose - log regexp makeAs results. (default is false)
@@ -372,10 +383,31 @@ function safeSERVER ($validation_map = NULL, $verbose = false) {
     if ($validation_map === NULL) {
         $validation_map = defaultValidationMap($_SERVER, false);
     }
-    forEach($validation_map as $key => $format) {
+    foreach($validation_map as $key => $format) {
         $key = makeAs($key, "varname", $verbose);
         if (isset($_SERVER[$key])) {
             $results[$key] = makeAs($_SERVER[$key], $format, $verbose);
+        }
+    }
+    return $results;
+}
+
+/**
+ * safeJSON - validate a JSON response against expected data types.
+ * @param $json_string (required)
+ * @param $validation_map (required) - most be provided. Undefined fields are not passed.
+ * a validate associative array.
+ * @param $verbose (optional) - log regexp makeAs results. (default is false)
+ * @return the santized version of $json_string.
+ */
+function safeJSON($json_string, $validation_map, $verbose = false) {
+    $obj = json_decode($json_string, true);
+    $results = array();
+    
+    foreach($validation_map as $key => $format) {
+        $key = makeAs($key, "varname", $verbose);
+        if (isset($obj[$key])) {
+            $results[$key] = makeAs($obj[$key], $format, $verbose);
         }
     }
     return $results;
