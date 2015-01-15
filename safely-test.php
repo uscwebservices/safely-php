@@ -333,7 +333,6 @@ function testAttributeCleaning() {
     $s = '<div><a href="mylink.html" title="fred" style="font-size:20">Fred</a></div>';
     $e = '<div><a href="mylink.html" title="fred">Fred</a></div>';
     $r = makeAs($s, "HTML");
-    //echo 'DEBUG make as HTML: ' . $s . ' -> ' . $r .PHP_EOL;
     //$assert->equal($e, $r, "[$e] != [$s]");
     $pos = strpos($r, 'style=');
     $assert->equal($pos, false, "[$e] != [$s]");
@@ -398,8 +397,12 @@ function testAnchorElementSantization() {
 {"txt": "<a href=\"javascript:alert('test')\">click</a>"}
 BAD_JSON;
     $result = safeJSON($badjson, $validation_map, false);
-    echo "DEBUG " . print_r($result, true) . PHP_EOL;
     $assert->equal(strpos($result["txt"], "javascript"), false, "Javascript href should get removed.");
+    $goodjson =<<<GOOD_JSON
+{"txt": "<a href=\"http://example.com\">click</a>"}
+GOOD_JSON;
+    $result = safeJSON($goodjson, $validation_map, false);
+    $assert->ok(strpos($result["txt"], "http://example.com") !== false, "href should not get removed.");
     return "OK";
 }
 
