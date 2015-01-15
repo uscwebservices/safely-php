@@ -177,8 +177,10 @@ function strip_attributes($s, $allowedattr = array("href", "src", "title", "alt"
            $newattrs = array();
            foreach ($attrs as $a) {
                $tmp = explode("=", $a);
-               if (trim($a) != "" && (!isset($tmp[1]) || (trim($tmp[0]) != "" && !in_array(strtolower(trim($tmp[0])), $allowedattr)))) {
-                   // All attribute
+               if (isset($tmp[0]) && strtolower(trim($tmp[0])) === "href" && strpos(strtolower($tmp[1]), "javascript") !== false) {
+                   $newattrs[] = 'href=""';
+               } else if (trim($a) != "" && (!isset($tmp[1]) || (trim($tmp[0]) != "" && !in_array(strtolower(trim($tmp[0])), $allowedattr)))) {
+                   // All non supported attributes attributes
                } else {
                    $newattrs[] = $a;
                }

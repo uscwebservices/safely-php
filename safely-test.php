@@ -387,6 +387,22 @@ BAD_JSON;
    return "OK";
 }
 
+function testAnchorElementSantization() {
+    global $assert;
+
+    $validation_map = array(
+       "txt" => "HTML"
+    );
+
+    $badjson =<<<BAD_JSON
+{"txt": "<a href=\"javascript:alert('test')\">click</a>"}
+BAD_JSON;
+    $result = safeJSON($badjson, $validation_map, false);
+    echo "DEBUG " . print_r($result, true) . PHP_EOL;
+    $assert->equal(strpos($result["txt"], "javascript"), false, "Javascript href should get removed.");
+    return "OK";
+}
+
 echo "Starting [" . $argv[0] . "]..." . PHP_EOL;
 
 $assert->ok(function_exists("defaultValidationMap"), "Should have a defaultValidationMap function defined.");
@@ -407,5 +423,6 @@ echo "\tTesting PRCE expressions process: " . testPRCEExpressions() . PHP_EOL;
 echo "\tTesting testUTF2HTML: " . testUTF2HTML() . PHP_EOL;
 echo "\tTesting testAttributeCleaning: " . testAttributeCleaning() . PHP_EOL;
 echo "\tTesting testSafeJSON: " . testSafeJSON() . PHP_EOL;
+echo "\tTesting testAnchorElementSantization: " . testAnchorElementSantization() . PHP_EOL;
 echo "Success!" . PHP_EOL;
 ?>
