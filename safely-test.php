@@ -311,9 +311,13 @@ function testUTF2HTML() {
     $s = '<a href="#jim">Jim</a> said, ' . html_entity_decode('&ldquo;') . 'I' . 
         html_entity_decode('&apos;') . 's here now.' . html_entity_decode('&rdquo;');
     $e = '<a href="#jim">Jim</a> said, &#8220;I&apos;s here now.&#8221;';
+    if (version_compare(PHP_VERSION, '5.5.0', '<')) {
+        // PHP 5.3.3 translate this way.
+        $e = '<a href="#jim">Jim</a> said, &ldquo;I&apos;s here now.&rdquo;';
+    }
     $r = utf2html($s);
     $assert->equal($e, $r, "[$e] != [$s]");
-    /*FIXME: not sure a solutio for this one yet. 
+    /*FIXME: not sure a solution for this one yet. 
     // Strip \u009c, \u009d, \u0080
     $s = '&#195;&#162;&#194;\u0080&#194;\u009cPicturing Ovid in Pompeii&#195;&#162;&#194;\u0080&#194;\u009d Peter Knox (University of Colorado)';
     $e = '&#195;&#162;&#194;&#194;Picturing Ovid in Pompeii&#195;&#162;&#194;#194; Peter Knox (University of Colorado)';
