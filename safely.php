@@ -316,10 +316,17 @@ function makeAs ($value, $format, $verbose = false) {
         if (isValidUrl($value) === true) {
             return $value;
         }
+        // Check to see if we're just missing protocol and try http://.
+        if (strpos($value, '://') === false  && 
+                isValidUrl('http://' . $value) === true) {
+            return 'http://' . $value;
+        }
+        return false;
     case 'email':
         if (isValidEmail($value) === true) {
             return $value;
         }
+        return false;
     }
     // We haven't found one of our explicit formats so...
     $preg_result = preg_match(">" . '^' . 

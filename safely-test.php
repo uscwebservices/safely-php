@@ -53,6 +53,22 @@ function testSupportFunctions () {
 	return "OK";
 }
 
+function testImprovedURLHandling () {
+    global $assert;
+
+    $_GET = array("url" => "http://example.com");
+    $expected = "http://example.com";
+    $result = safeGET(array("url" => "url"));
+    $assert->equal($result['url'], $expected, "expected $expected");
+
+    $_GET = array("url" => "www.example.com");
+    $expected = "http://www.example.com";
+    $result = safeGET(array("url" => "url"));
+    $assert->equal($result['url'], $expected, "expected $expected");
+
+    return "OK";
+}
+
 function testFixHTMLQuotes () {
     global $assert;
     $s = '<p>Test of "quotes" in string.</p>';
@@ -449,6 +465,7 @@ $assert->ok(function_exists("safePOST"), "Should have a safePOST function define
 $assert->ok(function_exists("safeSERVER"), "Should have a safeSERVER function defined.");
 $assert->ok(function_exists("safeJSON"), "Should have a safeJSON function defined.");
 
+echo "\tTesting testImprovedURLHandling: " . testImprovedURLHandling() . PHP_EOL;
 echo "\tTesting testFixHTMLQuotes: " . testFixHTMLQuotes() . PHP_EOL;
 echo "\tTesting testHTMLQuoteHandling: " . testHTMLQuoteHandling() . PHP_EOL;
 echo "\tTesting testSelectMultiple: " . testSelectMultiple() . PHP_EOL;
