@@ -194,6 +194,27 @@ function strip_attributes($s, $allowedattr = array("href", "src", "title", "alt"
 }
 
 /**
+ * fix_html_quotes - Scan a string and when you find quotes in the CDATA convert
+ * to appropriate entity.
+ * @param $s - the string to check and convert.
+ * @return string with quotes appropriately converted.
+ */
+function fix_html_quotes($s) {
+    $a = str_split($s);
+    $inCData = true;
+    for ($i = 0; $i < count($a); $i += 1) {
+        if ($a[$i] == '>') {
+            $inCData = true;
+        } else if ($a[$i] === '<') {
+            $inCData = false;
+        } else if ($inCData === true) {
+            $a[$i] = htmlentities($a[$i]);
+        }
+    }
+    return  implode('', $a);
+}
+
+/**
  * replace non-ascii characters with hex code
  * this replace mysql_real_escape_string because this requires a mysql
  * connection to exist.
@@ -283,12 +304,12 @@ function makeAs ($value, $format, $verbose = false) {
         return implode(',', $parts);
     case 'html':
         if (gettype($value) === "string") {
-           return escape(strip_attributes(strip_tags($value, SAFELY_ALLOWED_HTML)));
+           return escape(fix_html_quotes(strip_attributes(strip_tags($value, SAFELY_ALLOWED_HTML))));
         }
         return false;
     case 'text':
         if(gettype($value) === "string") {
-            return escape(strip_tags($value));
+            return escape(strip_tags($value), false);
         }
         return false;
     case 'url':

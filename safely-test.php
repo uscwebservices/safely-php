@@ -21,6 +21,7 @@ function testSupportFunctions () {
 	global $assert;
 	
 	// Test basic GET args
+    $_GET = array();
 	$_GET["int"] = "1";
 	$_GET["float"] = "2.1";
 	$_GET["varname"] = "my_var_name";
@@ -50,6 +51,27 @@ function testSupportFunctions () {
 	}
 	
 	return "OK";
+}
+
+function testFixHTMLQuotes () {
+    global $assert;
+    $s = '<p>Test of "quotes" in string.</p>';
+    $result = fix_html_quotes($s);
+    $expected = '<p>Test of &quot;quotes&quot; in string.</p>';
+    $assert->equal($result, $expected, "Expected entities: " . $result);
+
+    $s = 'Test of "quotes" in <b>string</b>.';
+    $result = fix_html_quotes($s);
+    $expected = 'Test of &quot;quotes&quot; in <b>string</b>.';
+    $assert->equal($result, $expected, "Expected entities: " . $result);
+
+
+    $s = 'Test of "quotes" before <a href="http://example.com">link</a>.';
+    $result = fix_html_quotes($s);
+    $expected = 'Test of &quot;quotes&quot; before <a href="http://example.com">link</a>.';
+    $assert->equal($result, $expected, "Expected entities: " . $result);
+
+    return "OK";
 }
 
 
@@ -410,6 +432,15 @@ GOOD_JSON;
     return "OK";
 }
 
+function testHTMLQuoteHandling () {
+    global $assert;
+
+    $_GET = array('title' => '<p>Test of "quotes"</p>');
+    $result = safeGET(array('title' => 'HTML'));
+    $assert->equal($result['title'], '<p>Test of &quot;quotes&quot;</p>', "Should convert quotes to entity: " . $result['title']);
+    return "OK";
+}
+
 echo "Starting [" . $argv[0] . "]..." . PHP_EOL;
 
 $assert->ok(function_exists("defaultValidationMap"), "Should have a defaultValidationMap function defined.");
@@ -418,6 +449,8 @@ $assert->ok(function_exists("safePOST"), "Should have a safePOST function define
 $assert->ok(function_exists("safeSERVER"), "Should have a safeSERVER function defined.");
 $assert->ok(function_exists("safeJSON"), "Should have a safeJSON function defined.");
 
+echo "\tTesting testFixHTMLQuotes: " . testFixHTMLQuotes() . PHP_EOL;
+echo "\tTesting testHTMLQuoteHandling: " . testHTMLQuoteHandling() . PHP_EOL;
 echo "\tTesting testSelectMultiple: " . testSelectMultiple() . PHP_EOL;
 echo "\tTesting testMakeAs: " . testMakeAs() . PHP_EOL;
 echo "\tTesting support functions: " . testSupportFunctions() . PHP_EOL;
