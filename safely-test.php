@@ -349,7 +349,7 @@ function testUTF2HTML() {
     $s = '<a href="#jim">Jim</a> said, ' . html_entity_decode('&ldquo;') . 'I' . 
         html_entity_decode('&apos;') . 's here now.' . html_entity_decode('&rdquo;');
     $e = '<a href="#jim">Jim</a> said, &#8220;I&apos;s here now.&#8221;';
-    if (version_compare(PHP_VERSION, '5.5.0', '<')) {
+    if (version_compare(PHP_VERSION, '5.4.3', '<')) {
         // PHP 5.3.3 translate this way.
         $e = '<a href="#jim">Jim</a> said, &ldquo;I&apos;s here now.&rdquo;';
     }
