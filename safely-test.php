@@ -457,6 +457,25 @@ function testHTMLQuoteHandling () {
     return "OK";
 }
 
+function testCleanScriptElements() {
+    global $assert;
+
+    $raw = "<script>alert(\"Oops this is bad.\");</script>This is a title.";
+    $expect = "This is a title.";
+    $result = strip_tags($raw, SAFELY_ALLOWED_HTML);
+    $assert->equal($result, $expected, "strip_tags() failed." . $result);
+
+    $_GET = array("title" => $raw);
+    $result = safeGET(array('title' => 'HTML'));
+    $assert->equal($result['title'], $expect, 'Failed to correct ' . $raw);
+
+
+    $_POST = array("title" => $raw);
+    $result = safePOST(array('title' => 'HTML'));
+    $assert->equal($result['title'], $expect, 'Failed to correct ' . $raw);
+    return "OK";
+}
+
 echo "Starting [" . $argv[0] . "]..." . PHP_EOL;
 
 $assert->ok(function_exists("defaultValidationMap"), "Should have a defaultValidationMap function defined.");
@@ -465,6 +484,7 @@ $assert->ok(function_exists("safePOST"), "Should have a safePOST function define
 $assert->ok(function_exists("safeSERVER"), "Should have a safeSERVER function defined.");
 $assert->ok(function_exists("safeJSON"), "Should have a safeJSON function defined.");
 
+echo "\tTesting testCleanScriptElements: " . testCleanScriptElements() . PHP_EOL;
 echo "\tTesting testImprovedURLHandling: " . testImprovedURLHandling() . PHP_EOL;
 echo "\tTesting testFixHTMLQuotes: " . testFixHTMLQuotes() . PHP_EOL;
 echo "\tTesting testHTMLQuoteHandling: " . testHTMLQuoteHandling() . PHP_EOL;
