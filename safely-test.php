@@ -461,10 +461,8 @@ function testCleanScriptElements() {
     global $assert;
 
     $raw = '<script>alert("Oops this is bad.");</script>This is a title.';
-    echo "DEBUG raw [$raw]\n";
     $expect = 'alert("Oops this is bad.");This is a title.';
     $result = strip_tags($raw, SAFELY_ALLOWED_HTML);
-    echo "DEBUG result [$result]\n";
     $assert->equal($result, $expect, "strip_tags() failed." . $result);
 
     // lib version should convert the " to &lquo; and &rquo;
@@ -481,6 +479,19 @@ function testCleanScriptElements() {
     return "OK";
 }
 
+function testSaneUnicodeSupportPCRE() {
+    global $assert;
+
+    $allowInternational = false;
+    if (defined('PCRE_VERSION')) {
+        if (intval(PCRE_VERSION) >= 7) { // constant available since PHP 5.2.4
+                $allowInternational = true;
+        }
+    }
+    $assert->ok($allowInternational, "PCRE should support proper UTF-8, may need to compile with --enable-unicode-properties");
+    return "OK";
+}
+
 echo "Starting [" . $argv[0] . "]..." . PHP_EOL;
 
 $assert->ok(function_exists("defaultValidationMap"), "Should have a defaultValidationMap function defined.");
@@ -489,6 +500,7 @@ $assert->ok(function_exists("safePOST"), "Should have a safePOST function define
 $assert->ok(function_exists("safeSERVER"), "Should have a safeSERVER function defined.");
 $assert->ok(function_exists("safeJSON"), "Should have a safeJSON function defined.");
 
+echo "\tTesting testSaneUnicodeSupportPCRE: " . testSaneUnicodeSupportPCRE() . PHP_EOL;
 echo "\tTesting testCleanScriptElements: " . testCleanScriptElements() . PHP_EOL;
 echo "\tTesting testImprovedURLHandling: " . testImprovedURLHandling() . PHP_EOL;
 echo "\tTesting testFixHTMLQuotes: " . testFixHTMLQuotes() . PHP_EOL;

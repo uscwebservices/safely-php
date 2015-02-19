@@ -299,7 +299,9 @@ function makeAs ($value, $format, $verbose = false) {
     case 'varname_list':
         $parts = explode(',', $value);
         for ($i = 0; $i < count($parts); $i += 1) {
-           $parts[$i] = preg_replace('/\W/u', '', $parts[$i]);
+            // NOTE on replaced line: $parts[$i] = preg_replace('/\W/u', '', $parts[$i]);
+            // PRCE was not compiled with UTF-8 support on web-app.usc.edu. 2015-02-19 RSD
+           $parts[$i] = preg_replace('/\W/', '', $parts[$i]);
         }
         return implode(',', $parts);
     case 'html':
