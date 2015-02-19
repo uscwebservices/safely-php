@@ -460,10 +460,15 @@ function testHTMLQuoteHandling () {
 function testCleanScriptElements() {
     global $assert;
 
-    $raw = "<script>alert(\"Oops this is bad.\");</script>This is a title.";
-    $expect = "This is a title.";
+    $raw = '<script>alert("Oops this is bad.");</script>This is a title.';
+    echo "DEBUG raw [$raw]\n";
+    $expect = 'alert("Oops this is bad.");This is a title.';
     $result = strip_tags($raw, SAFELY_ALLOWED_HTML);
-    $assert->equal($result, $expected, "strip_tags() failed." . $result);
+    echo "DEBUG result [$result]\n";
+    $assert->equal($result, $expect, "strip_tags() failed." . $result);
+
+    // lib version should convert the " to &lquo; and &rquo;
+    $expect = 'alert(&quot;Oops this is bad.&quot;);This is a title.';
 
     $_GET = array("title" => $raw);
     $result = safeGET(array('title' => 'HTML'));
