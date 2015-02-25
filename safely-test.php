@@ -425,6 +425,24 @@ BAD_JSON;
    $assert->ok(is_string($result['title']), "title should be string " . gettype($result['title']));
    $assert->equal($result['title'], "click", "title wrong.");
    $assert->equal(strpos($result['summary'], "<script>"), false, "Should move script element");
+
+   $validation_map = [
+        "title" => "HTML"
+       ];
+   $_POST = [
+        "title" => 'Injection <a href="javascript:alert(\"Something Bad\")">Test</a>.'
+       ];
+   $expected_result = [
+        "title" => 'Injection <a href=\"\">Test</a>.'
+       ];
+   $result = safePOST($validation_map);
+   $assert->equal($result['title'], $expected_result['title'], "Should have a clean href in title: ". $result['title']);
+
+   $_POST = [
+        "title" => 'Injection <a href=' . "'" . 'javascript:alert("Something Bad")' . "'" . '>Test</a>.'
+       ];
+   $result = safePOST($validation_map);
+   $assert->equal($result['title'], $expected_result['title'], "Should have a clean href in title: ". $result['title']);
    return "OK";
 }
 
