@@ -425,6 +425,11 @@ BAD_JSON;
    $assert->ok(is_string($result['title']), "title should be string " . gettype($result['title']));
    $assert->equal($result['title'], "click", "title wrong.");
    $assert->equal(strpos($result['summary'], "<script>"), false, "Should move script element");
+   return "OK";
+}
+
+function testHREFCleaning() {
+   global $assert;
 
    $validation_map = [
         "title" => "HTML"
@@ -518,6 +523,7 @@ $assert->ok(function_exists("safePOST"), "Should have a safePOST function define
 $assert->ok(function_exists("safeSERVER"), "Should have a safeSERVER function defined.");
 $assert->ok(function_exists("safeJSON"), "Should have a safeJSON function defined.");
 
+echo "\tTesting testHREFCleaning: " . testHREFCleaning() . PHP_EOL;
 echo "\tTesting testSaneUnicodeSupportPCRE: " . testSaneUnicodeSupportPCRE() . PHP_EOL;
 echo "\tTesting testCleanScriptElements: " . testCleanScriptElements() . PHP_EOL;
 echo "\tTesting testImprovedURLHandling: " . testImprovedURLHandling() . PHP_EOL;
