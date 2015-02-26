@@ -455,7 +455,7 @@ function testHREFCleaning() {
         "title" => 'Injection <a href="javascript:alert(\"Something Bad\")">Test</a>.'
        ];
    $expected_result = [
-        "title" => 'Injection <a href=\"\">Test</a>.'
+        "title" => 'Injection <a >Test</a>.'
        ];
    $result = safePOST($validation_map);
    $assert->equal($result['title'], $expected_result['title'], "Should have a clean href in title: ". $result['title']);
