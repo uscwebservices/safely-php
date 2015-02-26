@@ -177,12 +177,13 @@ function strip_attributes($s, $allowedattr = array("href", "src", "title", "alt"
            $newattrs = array();
            foreach ($attrs as $a) {
                $tmp = explode("=", $a);
-               if (isset($tmp[0]) && strtolower(trim($tmp[0])) === "href" && strpos(strtolower($tmp[1]), "javascript") !== false) {
-                   $newattrs[] = 'href=""';
-               } else if (trim($a) != "" && (!isset($tmp[1]) || (trim($tmp[0]) != "" && !in_array(strtolower(trim($tmp[0])), $allowedattr)))) {
-                   // All non supported attributes attributes
-               } else {
-                   $newattrs[] = $a;
+               if (trim($a) !== "" && isset($tmp[0]) && isset($tmp[1]) && trim($tmp[0]) !== "" && in_array(strtolower(trim($tmp[0])), $allowedattr)) {
+                   // Only allowed attributes should get passed through
+                   // but href must not contain a javascript protocol!
+                   if (strpos(strtolower($tmp[1]), "javascript:") === false) {
+                       // attribute should not have JS injection.
+                       $newattrs[] = trim($a);
+                   }
                }
            }
            $attrs = implode(" ", $newattrs);

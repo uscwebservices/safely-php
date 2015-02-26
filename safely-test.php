@@ -372,23 +372,29 @@ function testUTF2HTML() {
 
 function testAttributeCleaning() {
     global $assert;
+
     $s = '<div><a href="mylink.html" title="fred" style="font-size:20">Fred</a></div>';
     $e = '<div><a href="mylink.html" title="fred">Fred</a></div>';
-    $r = makeAs($s, "HTML");
+    $r = strip_attributes($s);
     $assert->equal($e, $r, "[$e] != [$s]");
+
+    $s = '<div><a href="mylink.html" title="fred" style="font-size:20">Fred</a></div>';
+    $e = escape('<div><a href="mylink.html" title="fred">Fred</a></div>');
+    $r = makeAs($s, "HTML");
+    $assert->equal($e, $r, "[$e] != [$r]");
     $pos = strpos($r, 'href=');
-    $assert->notEqual($pos, false, "Position not false.");
+    $assert->notEqual($pos, false, "$pos should not be false.");
     $pos = strpos($r, 'style=');
     $assert->equal($pos, false, "[$e] != [$s]");
 
     $s = '<div><a href="javascript:alert(\'Something bad\');" title="fred" style="font-size:20">Fred</a></div>';
-    $e = '<div><a title="fred">Fred</a></div>';
+    $e = escape('<div><a title="fred">Fred</a></div>');
     $r = makeAs($s, "HTML");
-    $assert->equal($e, $r, "[$e] != [$s]");
+    $assert->equal($e, $r, "[$e] != [$r]");
     $pos = strpos($r, 'href=');
-    $assert->equal($pos, false, "[$e] != [$s]");
+    $assert->equal($pos, false, "$pos should be false.");
     $pos = strpos($r, 'style=');
-    $assert->equal($pos, false, "[$e] != [$s]");
+    $assert->equal($pos, false, "$pos should be false");
     return "OK";
 }
 
