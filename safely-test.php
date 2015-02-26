@@ -445,6 +445,29 @@ BAD_JSON;
    return "OK";
 }
 
+function testHREFCleaning() {
+   global $assert;
+
+   $validation_map = [
+        "title" => "HTML"
+       ];
+   $_POST = [
+        "title" => 'Injection <a href="javascript:alert(\"Something Bad\")">Test</a>.'
+       ];
+   $expected_result = [
+        "title" => 'Injection <a href=\"\">Test</a>.'
+       ];
+   $result = safePOST($validation_map);
+   $assert->equal($result['title'], $expected_result['title'], "Should have a clean href in title: ". $result['title']);
+
+   $_POST = [
+        "title" => 'Injection <a href=' . "'" . 'javascript:alert("Something Bad")' . "'" . '>Test</a>.'
+       ];
+   $result = safePOST($validation_map);
+   $assert->equal($result['title'], $expected_result['title'], "Should have a clean href in title: ". $result['title']);
+   return "OK";
+}
+
 function testAnchorElementSantization() {
     global $assert;
 
@@ -518,6 +541,7 @@ $assert->ok(function_exists("safeSERVER"), "Should have a safeSERVER function de
 $assert->ok(function_exists("safeJSON"), "Should have a safeJSON function defined.");
 
 echo "\tTesting testAttributeCleaning: " . testAttributeCleaning() . PHP_EOL;
+echo "\tTesting testHREFCleaning: " . testHREFCleaning() . PHP_EOL;
 echo "\tTesting testSaneUnicodeSupportPCRE: " . testSaneUnicodeSupportPCRE() . PHP_EOL;
 echo "\tTesting testCleanScriptElements: " . testCleanScriptElements() . PHP_EOL;
 echo "\tTesting testImprovedURLHandling: " . testImprovedURLHandling() . PHP_EOL;

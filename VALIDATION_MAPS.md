@@ -18,7 +18,7 @@ map does not conform then the field will not be return by the various safely fun
         "favorite_integer" => "this is not a number", 
         "fancy_message" => "<script>console.log('hello world!');</script><p>OK HTHML now"));
     // $safe_json will not have favorite_integer since it is not an integer
-    // and will only have '<p>OK HTNML now' for fancy_message.
+    // and will only have '<p>OK HTML now' for fancy_message.
     $safe_json = safeJSON($some_json_string, $validation_map);
 ```
 
