@@ -375,7 +375,18 @@ function testAttributeCleaning() {
     $s = '<div><a href="mylink.html" title="fred" style="font-size:20">Fred</a></div>';
     $e = '<div><a href="mylink.html" title="fred">Fred</a></div>';
     $r = makeAs($s, "HTML");
-    //$assert->equal($e, $r, "[$e] != [$s]");
+    $assert->equal($e, $r, "[$e] != [$s]");
+    $pos = strpos($r, 'href=');
+    $assert->notEqual($pos, false, "Position not false.");
+    $pos = strpos($r, 'style=');
+    $assert->equal($pos, false, "[$e] != [$s]");
+
+    $s = '<div><a href="javascript:alert(\'Something bad\');" title="fred" style="font-size:20">Fred</a></div>';
+    $e = '<div><a title="fred">Fred</a></div>';
+    $r = makeAs($s, "HTML");
+    $assert->equal($e, $r, "[$e] != [$s]");
+    $pos = strpos($r, 'href=');
+    $assert->equal($pos, false, "[$e] != [$s]");
     $pos = strpos($r, 'style=');
     $assert->equal($pos, false, "[$e] != [$s]");
     return "OK";
@@ -500,6 +511,7 @@ $assert->ok(function_exists("safePOST"), "Should have a safePOST function define
 $assert->ok(function_exists("safeSERVER"), "Should have a safeSERVER function defined.");
 $assert->ok(function_exists("safeJSON"), "Should have a safeJSON function defined.");
 
+echo "\tTesting testAttributeCleaning: " . testAttributeCleaning() . PHP_EOL;
 echo "\tTesting testSaneUnicodeSupportPCRE: " . testSaneUnicodeSupportPCRE() . PHP_EOL;
 echo "\tTesting testCleanScriptElements: " . testCleanScriptElements() . PHP_EOL;
 echo "\tTesting testImprovedURLHandling: " . testImprovedURLHandling() . PHP_EOL;
@@ -515,7 +527,6 @@ echo "\tTesting safeStrToTime process: " . testSafeStrToTime() . PHP_EOL;
 echo "\tTesting Varname Lists process: " . testVarnameLists() . PHP_EOL;
 echo "\tTesting PRCE expressions process: " . testPRCEExpressions() . PHP_EOL;
 echo "\tTesting testUTF2HTML: " . testUTF2HTML() . PHP_EOL;
-echo "\tTesting testAttributeCleaning: " . testAttributeCleaning() . PHP_EOL;
 echo "\tTesting testSafeJSON: " . testSafeJSON() . PHP_EOL;
 echo "\tTesting testAnchorElementSantization: " . testAnchorElementSantization() . PHP_EOL;
 echo "Success!" . PHP_EOL;
