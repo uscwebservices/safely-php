@@ -367,6 +367,30 @@ function testUTF2HTML() {
     $e = '<a href="mylink.html">My Link</a>';
     $r = utf2html($s);
     $assert->equal($e, $r, "[$e] != [$s]");
+
+    $summary=<<<EOT
+Frédéric Hurlet, Université Paris-Ouest, Nanterre La Défense, will present "Spaces of Indignity. Being deprived of friendship of the prince and banned from court" to the Pre-Modern Mediterrean seminar series on April 21st.
+EOT;
+
+    $summary_expected=<<<EOT
+Fr&eacute;d&eacute;ric Hurlet, Universit&eacute; Paris-Ouest, Nanterre La D&eacute;fense, will present &quot;Spaces of Indignity. Being deprived of friendship of the prince and banned from court&quot; to the Pre-Modern Mediterrean seminar series on April 21st.
+EOT;
+    $result = utf2html($summary);
+    $assert->equal($summary_expected, $result, "[$summary_expected] != [$result]");
+
+    $description_example=<<<EOT
+Like promotion, loss of social position in Rome tends to exist only when it becomes visible and is inserted as such in public space a way or another. This lecture will focus on two political practices which meant for concerned senators a loss of credit,and thus of status: first, the official act by which the prince or a member of the imperial family would withdraw his friendship from a senator (the so called renuntiatio amicitiae); then, the way a senator could be prevented from visiting the prince (theinterdictio aulae). This lecture will present the sources for these two practices focusing on the more practical aspects and their spatial inscription. 
+
+Frédéric Hurlet is professor of History of the Roman World, University Paris Ouest Nanterre La Défense. He is Director of the Maison de l’Archéologie et de l’Ethnologie, René-Ginouvès. He published a few books and papers on the transition between Republic and Principate (first century BC-first century AD). He's working on the imperial power, the Roman aristocracy and the government of the Roman Empire.
+EOT;
+
+    $description_expected=<<<EOT
+Like promotion,&nbsp;loss of social position&nbsp;in Rome&nbsp;tends to exist&nbsp;only when it becomes&nbsp;visible and&nbsp;is&nbsp;inserted&nbsp;as such in&nbsp;public space a&nbsp;way or&nbsp;another.&nbsp;This lecture&nbsp;will focus on&nbsp;two political&nbsp;practices&nbsp;which&nbsp;meant&nbsp;for concerned&nbsp;senators&nbsp;a loss of&nbsp;credit,and thus&nbsp;of&nbsp;status: first, the&nbsp;official&nbsp;act by which&nbsp;the&nbsp;prince&nbsp;or a member&nbsp;of the imperial family&nbsp;would&nbsp;withdraw&nbsp;his friendship from&nbsp;a senator&nbsp;(the so&nbsp;called&nbsp;renuntiatio&nbsp;amicitiae);&nbsp;then,&nbsp;the way a&nbsp;senator&nbsp;could be prevented&nbsp;from visiting the&nbsp;prince&nbsp;(theinterdictio&nbsp;aulae). This lecture&nbsp;will present the&nbsp;sources&nbsp;for these two&nbsp;practices&nbsp;focusing on&nbsp;the more practical&nbsp;aspects&nbsp;and their spatial&nbsp;inscription.&nbsp;
+
+Fr&eacute;d&eacute;ric Hurlet is&nbsp;professor of History of the Roman World, University Paris Ouest Nanterre La D&eacute;fense. He is Director of the Maison de l&rsquo;Arch&eacute;ologie et de l&rsquo;Ethnologie, Ren&eacute;-Ginouv&egrave;s. He published a few books and papers on the transition between Republic and Principate (first century BC-first century AD). He's working on the imperial power, the Roman aristocracy and the government of the Roman Empire.&nbsp;
+EOT;
+   
+    
     return "OK";
 }
 
@@ -540,6 +564,7 @@ $assert->ok(function_exists("safePOST"), "Should have a safePOST function define
 $assert->ok(function_exists("safeSERVER"), "Should have a safeSERVER function defined.");
 $assert->ok(function_exists("safeJSON"), "Should have a safeJSON function defined.");
 
+echo "\tTesting testUTF2HTML: " . testUTF2HTML() . PHP_EOL;
 echo "\tTesting testAttributeCleaning: " . testAttributeCleaning() . PHP_EOL;
 echo "\tTesting testHREFCleaning: " . testHREFCleaning() . PHP_EOL;
 echo "\tTesting testSaneUnicodeSupportPCRE: " . testSaneUnicodeSupportPCRE() . PHP_EOL;
@@ -556,7 +581,6 @@ echo "\tTesting server processing: " . testSERVERProcessing() . PHP_EOL;
 echo "\tTesting safeStrToTime process: " . testSafeStrToTime() . PHP_EOL;
 echo "\tTesting Varname Lists process: " . testVarnameLists() . PHP_EOL;
 echo "\tTesting PRCE expressions process: " . testPRCEExpressions() . PHP_EOL;
-echo "\tTesting testUTF2HTML: " . testUTF2HTML() . PHP_EOL;
 echo "\tTesting testSafeJSON: " . testSafeJSON() . PHP_EOL;
 echo "\tTesting testAnchorElementSantization: " . testAnchorElementSantization() . PHP_EOL;
 echo "Success!" . PHP_EOL;
