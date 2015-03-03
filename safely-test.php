@@ -319,6 +319,53 @@ function testMakeAs() {
         $r = makeAs($s, "Email", false);
         $assert->equal($e, $r, "[$e] == [$r] for [$s]");
     }
+
+    $summary=<<<EOT
+Frédéric Hurlet, Université Paris-Ouest, Nanterre La Défense, will present "Spaces of Indignity. Being deprived of friendship of the prince and banned from court" to the Pre-Modern Mediterrean seminar series on April 21st.
+EOT;
+
+    $summary_expected=<<<EOT
+Fr&#233;d&#233;ric Hurlet, Universit&#233; Paris-Ouest, Nanterre La D&#233;fense, will present &quot;Spaces of Indignity. Being deprived of friendship of the prince and banned from court&quot; to the Pre-Modern Mediterrean seminar series on April 21st.
+EOT;
+
+    $result = makeAs($summary, 'HTML', true);
+    $assert->equal($summary_expected, $result, "\n[$summary_expected]\n[$result]\n");
+
+    // Christel Muller example.
+    $summary=<<<EOT
+Christel Müller, Université Paris-Ouest Nanterre La Défense, will present "The 'common emporion of Greece': groups and subgroups of foreigners in Late Hellenistic Delos' to the Pre-Modern Mediterranean" seminar on Monday, April 20th.
+EOT;
+
+    $summary_expected=<<<EOT
+Christel M&#252;ller, Universit&#233; Paris-Ouest Nanterre La D&#233;fense, will present &quot;The &apos;common emporion of Greece&apos;: groups and subgroups of foreigners in Late Hellenistic Delos&apos; to the Pre-Modern Mediterranean&quot; seminar on Monday, April 20th.
+EOT;
+    $result = makeAs($summary, 'HTML', true);
+    $assert->equal($summary_expected, $result, "\n[$summary_expected]\n[$result]\n");
+    
+
+    $description=<<<EOT
+Professor Müller's paper aims at observing the changes that have affected, during the Late Hellenistic period (c. 150-50 BCE), the exceptional Delian 'social laboratory', an Athenian colony at this time according to Pierre Roussel: these changes concern the composition, but also the perception and self presentation of the diverse groups of foreigners that had their residence on the island (Athenians, Romans/Italians, other 'Greeks'...). The main documents here are the inscriptions, first the decrees of the so-called Athenian cleruchy, then later on the numerous dedications made by these groups collectively.
+EOT;
+
+    $description_expected=<<<EOT
+Professor M&#252;ller&apos;s paper aims at observing the changes that have affected, during the Late Hellenistic period (c. 150-50 BCE), the exceptional Delian &apos;social laboratory&apos;, an Athenian colony at this time according to Pierre Roussel: these changes concern the composition, but also the perception and self presentation of the diverse groups of foreigners that had their residence on the island (Athenians, Romans/Italians, other &apos;Greeks&apos;...). The main documents here are the inscriptions, first the decrees of the so-called Athenian cleruchy, then later on the numerous dedications made by these groups collectively.
+EOT;
+
+    $result = makeAs($description, 'HTML', true);
+    $assert->equal($description_expected, $result, "\n[$description_expected]\n[$result]\n");
+    
+
+    $description2=<<<EOT
+Christel Müller is Professor of Greek History at the University of Paris Ouest Nanterre La Défense. Her main subjects of interest are: society and institutions of Hellenistic Greece, Boeotian epigraphy, the economy and society of colonisation (Black Sea). She is the author of D'Olbia à Tanaïs: Territoires et réseaux d'échanges dans la Mer Noire septentrionale aux époques classique et hellénistique (2010), the co-author of Archéologie historique de la Gréce antique, 3rd ed. (2014) and the co-editor of Les Italiens dans le monde grec (2002), Identités et cultures dans le monde méditerranéen antique (2002), Citoyenneté et participation à la basse époque hellénistique (2005) and Identité ethnique et culture matérielle dans le monde grec (2014).
+EOT;
+
+    $description2_expected=<<<EOT
+Christel M&#252;ller is Professor of Greek History at the University of Paris Ouest Nanterre La D&#233;fense. Her main subjects of interest are: society and institutions of Hellenistic Greece, Boeotian epigraphy, the economy and society of colonisation (Black Sea). She is the author of D&apos;Olbia &#224; Tana&#239;s: Territoires et r&#233;seaux d&apos;&#233;changes dans la Mer Noire septentrionale aux &#233;poques classique et hell&#233;nistique (2010), the co-author of Arch&#233;ologie historique de la Gr&#233;ce antique, 3rd ed. (2014) and the co-editor of Les Italiens dans le monde grec (2002), Identit&#233;s et cultures dans le monde m&#233;diterran&#233;en antique (2002), Citoyennet&#233; et participation &#224; la basse &#233;poque hell&#233;nistique (2005) and Identit&#233; ethnique et culture mat&#233;rielle dans le monde grec (2014).
+EOT;
+
+    $result = makeAs($description2, 'HTML', true);
+    $assert->equal($description2_expected, $result, "\n[$description2_expected]\n[$result]\n");
+    
     return "OK";
 }
 
@@ -402,18 +449,40 @@ EOT;
     $result = utf2html($description2);
     $assert->equal($description2_expected, $result, "\n[$description2_expected]\n[$result]\n");
     
-
+    // Christel Muller example.
     $summary=<<<EOT
-Frédéric Hurlet, Université Paris-Ouest, Nanterre La Défense, will present "Spaces of Indignity. Being deprived of friendship of the prince and banned from court" to the Pre-Modern Mediterrean seminar series on April 21st.
+Christel Müller, Université Paris-Ouest Nanterre La Défense, will present "The 'common emporion of Greece': groups and subgroups of foreigners in Late Hellenistic Delos' to the Pre-Modern Mediterranean" seminar on Monday, April 20th.
 EOT;
 
     $summary_expected=<<<EOT
-Fr&#233;d&#233;ric Hurlet, Universit&#233; Paris-Ouest, Nanterre La D&#233;fense, will present &quot;Spaces of Indignity. Being deprived of friendship of the prince and banned from court&quot; to the Pre-Modern Mediterrean seminar series on April 21st.
+Christel M&#252;ller, Universit&#233; Paris-Ouest Nanterre La D&#233;fense, will present "The 'common emporion of Greece': groups and subgroups of foreigners in Late Hellenistic Delos' to the Pre-Modern Mediterranean" seminar on Monday, April 20th.
 EOT;
-
-    $result = makeAs($summary, 'HTML', true);
+    $result = utf2html($summary);
     $assert->equal($summary_expected, $result, "\n[$summary_expected]\n[$result]\n");
     
+
+    $description=<<<EOT
+Professor Müller's paper aims at observing the changes that have affected, during the Late Hellenistic period (c. 150-50 BCE), the exceptional Delian 'social laboratory', an Athenian colony at this time according to Pierre Roussel: these changes concern the composition, but also the perception and self presentation of the diverse groups of foreigners that had their residence on the island (Athenians, Romans/Italians, other 'Greeks'...). The main documents here are the inscriptions, first the decrees of the so-called Athenian cleruchy, then later on the numerous dedications made by these groups collectively.
+EOT;
+
+    $description_expected=<<<EOT
+Professor M&#252;ller's paper aims at observing the changes that have affected, during the Late Hellenistic period (c. 150-50 BCE), the exceptional Delian 'social laboratory', an Athenian colony at this time according to Pierre Roussel: these changes concern the composition, but also the perception and self presentation of the diverse groups of foreigners that had their residence on the island (Athenians, Romans/Italians, other 'Greeks'...). The main documents here are the inscriptions, first the decrees of the so-called Athenian cleruchy, then later on the numerous dedications made by these groups collectively.
+EOT;
+
+    $result = utf2html($description);
+    $assert->equal($description_expected, $result, "\n[$description_expected]\n[$result]\n");
+    
+
+    $description2=<<<EOT
+Christel Müller is Professor of Greek History at the University of Paris Ouest Nanterre La Défense. Her main subjects of interest are: society and institutions of Hellenistic Greece, Boeotian epigraphy, the economy and society of colonisation (Black Sea). She is the author of D'Olbia à Tanaïs: Territoires et réseaux d'échanges dans la Mer Noire septentrionale aux époques classique et hellénistique (2010), the co-author of Archéologie historique de la Gréce antique, 3rd ed. (2014) and the co-editor of Les Italiens dans le monde grec (2002), Identités et cultures dans le monde méditerranéen antique (2002), Citoyenneté et participation à la basse époque hellénistique (2005) and Identité ethnique et culture matérielle dans le monde grec (2014).
+EOT;
+
+    $description2_expected=<<<EOT
+Christel M&#252;ller is Professor of Greek History at the University of Paris Ouest Nanterre La D&#233;fense. Her main subjects of interest are: society and institutions of Hellenistic Greece, Boeotian epigraphy, the economy and society of colonisation (Black Sea). She is the author of D'Olbia &#224; Tana&#239;s: Territoires et r&#233;seaux d'&#233;changes dans la Mer Noire septentrionale aux &#233;poques classique et hell&#233;nistique (2010), the co-author of Arch&#233;ologie historique de la Gr&#233;ce antique, 3rd ed. (2014) and the co-editor of Les Italiens dans le monde grec (2002), Identit&#233;s et cultures dans le monde m&#233;diterran&#233;en antique (2002), Citoyennet&#233; et participation &#224; la basse &#233;poque hell&#233;nistique (2005) and Identit&#233; ethnique et culture mat&#233;rielle dans le monde grec (2014).
+EOT;
+
+    $result = utf2html($description2);
+    $assert->equal($description2_expected, $result, "\n[$description2_expected]\n[$result]\n");
     
     return "OK";
 }
