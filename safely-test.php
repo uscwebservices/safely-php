@@ -320,51 +320,51 @@ function testMakeAs() {
         $assert->equal($e, $r, "[$e] == [$r] for [$s]");
     }
 
-    $summary=<<<EOT
+    $text=<<<EOT
 Frédéric Hurlet, Université Paris-Ouest, Nanterre La Défense, will present "Spaces of Indignity. Being deprived of friendship of the prince and banned from court" to the Pre-Modern Mediterrean seminar series on April 21st.
 EOT;
 
-    $summary_expected=<<<EOT
+    $text_expected=<<<EOT
 Fr&#233;d&#233;ric Hurlet, Universit&#233; Paris-Ouest, Nanterre La D&#233;fense, will present &quot;Spaces of Indignity. Being deprived of friendship of the prince and banned from court&quot; to the Pre-Modern Mediterrean seminar series on April 21st.
 EOT;
 
-    $result = makeAs($summary, 'HTML', true);
-    $assert->equal($summary_expected, $result, "\n[$summary_expected]\n[$result]\n");
+    $result = makeAs($text, 'HTML', true);
+    $assert->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
 
     // Christel Muller example.
-    $summary=<<<EOT
+    $text=<<<EOT
 Christel Müller, Université Paris-Ouest Nanterre La Défense, will present "The 'common emporion of Greece': groups and subgroups of foreigners in Late Hellenistic Delos' to the Pre-Modern Mediterranean" seminar on Monday, April 20th.
 EOT;
 
-    $summary_expected=<<<EOT
+    $text_expected=<<<EOT
 Christel M&#252;ller, Universit&#233; Paris-Ouest Nanterre La D&#233;fense, will present &quot;The &apos;common emporion of Greece&apos;: groups and subgroups of foreigners in Late Hellenistic Delos&apos; to the Pre-Modern Mediterranean&quot; seminar on Monday, April 20th.
 EOT;
-    $result = makeAs($summary, 'HTML', true);
-    $assert->equal($summary_expected, $result, "\n[$summary_expected]\n[$result]\n");
+    $result = makeAs($text, 'HTML', true);
+    $assert->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
     
 
-    $description=<<<EOT
+    $text=<<<EOT
 Professor Müller's paper aims at observing the changes that have affected, during the Late Hellenistic period (c. 150-50 BCE), the exceptional Delian 'social laboratory', an Athenian colony at this time according to Pierre Roussel: these changes concern the composition, but also the perception and self presentation of the diverse groups of foreigners that had their residence on the island (Athenians, Romans/Italians, other 'Greeks'...). The main documents here are the inscriptions, first the decrees of the so-called Athenian cleruchy, then later on the numerous dedications made by these groups collectively.
 EOT;
 
-    $description_expected=<<<EOT
+    $text_expected=<<<EOT
 Professor M&#252;ller&apos;s paper aims at observing the changes that have affected, during the Late Hellenistic period (c. 150-50 BCE), the exceptional Delian &apos;social laboratory&apos;, an Athenian colony at this time according to Pierre Roussel: these changes concern the composition, but also the perception and self presentation of the diverse groups of foreigners that had their residence on the island (Athenians, Romans/Italians, other &apos;Greeks&apos;...). The main documents here are the inscriptions, first the decrees of the so-called Athenian cleruchy, then later on the numerous dedications made by these groups collectively.
 EOT;
 
-    $result = makeAs($description, 'HTML', true);
-    $assert->equal($description_expected, $result, "\n[$description_expected]\n[$result]\n");
+    $result = makeAs($text, 'HTML', true);
+    $assert->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
     
 
-    $description2=<<<EOT
+    $text=<<<EOT
 Christel Müller is Professor of Greek History at the University of Paris Ouest Nanterre La Défense. Her main subjects of interest are: society and institutions of Hellenistic Greece, Boeotian epigraphy, the economy and society of colonisation (Black Sea). She is the author of D'Olbia à Tanaïs: Territoires et réseaux d'échanges dans la Mer Noire septentrionale aux époques classique et hellénistique (2010), the co-author of Archéologie historique de la Gréce antique, 3rd ed. (2014) and the co-editor of Les Italiens dans le monde grec (2002), Identités et cultures dans le monde méditerranéen antique (2002), Citoyenneté et participation à la basse époque hellénistique (2005) and Identité ethnique et culture matérielle dans le monde grec (2014).
 EOT;
 
-    $description2_expected=<<<EOT
+    $text_expected=<<<EOT
 Christel M&#252;ller is Professor of Greek History at the University of Paris Ouest Nanterre La D&#233;fense. Her main subjects of interest are: society and institutions of Hellenistic Greece, Boeotian epigraphy, the economy and society of colonisation (Black Sea). She is the author of D&apos;Olbia &#224; Tana&#239;s: Territoires et r&#233;seaux d&apos;&#233;changes dans la Mer Noire septentrionale aux &#233;poques classique et hell&#233;nistique (2010), the co-author of Arch&#233;ologie historique de la Gr&#233;ce antique, 3rd ed. (2014) and the co-editor of Les Italiens dans le monde grec (2002), Identit&#233;s et cultures dans le monde m&#233;diterran&#233;en antique (2002), Citoyennet&#233; et participation &#224; la basse &#233;poque hell&#233;nistique (2005) and Identit&#233; ethnique et culture mat&#233;rielle dans le monde grec (2014).
 EOT;
 
-    $result = makeAs($description2, 'HTML', true);
-    $assert->equal($description2_expected, $result, "\n[$description2_expected]\n[$result]\n");
+    $result = makeAs($text, 'HTML', true);
+    $assert->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
     
     return "OK";
 }
@@ -415,74 +415,86 @@ function testUTF2HTML() {
     $r = utf2html($s);
     $assert->equal($e, $r, "[$e] != [$s]");
 
-    $summary=<<<EOT
+    $text=<<<EOT
 Frédéric Hurlet, Université Paris-Ouest, Nanterre La Défense, will present "Spaces of Indignity. Being deprived of friendship of the prince and banned from court" to the Pre-Modern Mediterrean seminar series on April 21st.
 EOT;
 
-    $summary_expected=<<<EOT
+    $text_expected=<<<EOT
 Fr&#233;d&#233;ric Hurlet, Universit&#233; Paris-Ouest, Nanterre La D&#233;fense, will present "Spaces of Indignity. Being deprived of friendship of the prince and banned from court" to the Pre-Modern Mediterrean seminar series on April 21st.
 EOT;
 
-    $result = utf2html($summary);
-    $assert->equal($summary_expected, $result, "\n[$summary_expected]\n[$result]\n");
+    $result = utf2html($text);
+    $assert->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
 
-    $description=<<<EOT
+    $text=<<<EOT
 Like promotion, loss of social position in Rome tends to exist only when it becomes visible and is inserted as such in public space a way or another. This lecture will focus on two political practices which meant for concerned senators a loss of credit,and thus of status: first, the official act by which the prince or a member of the imperial family would withdraw his friendship from a senator (the so called renuntiatio amicitiae); then, the way a senator could be prevented from visiting the prince (theinterdictio aulae). This lecture will present the sources for these two practices focusing on the more practical aspects and their spatial inscription.
 EOT;
 
-    $description_expected=<<<EOT
+    $text_expected=<<<EOT
 Like promotion, loss of social position in Rome tends to exist only when it becomes visible and is inserted as such in public space a way or another. This lecture will focus on two political practices which meant for concerned senators a loss of credit,and thus of status: first, the official act by which the prince or a member of the imperial family would withdraw his friendship from a senator (the so called renuntiatio amicitiae); then, the way a senator could be prevented from visiting the prince (theinterdictio aulae). This lecture will present the sources for these two practices focusing on the more practical aspects and their spatial inscription.
 EOT;
 
-    $result = utf2html($description);
-    $assert->equal($description_expected, $result, "\n[$description_expected]\n[$result]\n");
+    $result = utf2html($text);
+    $assert->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
 
 
-    $description2=<<<EOT
+    $text=<<<EOT
 Frédéric Hurlet is professor of History of the Roman World, University Paris Ouest Nanterre La Défense. He is Director of the Maison de l’Archéologie et de l’Ethnologie, René-Ginouvès. He published a few books and papers on the transition between Republic and Principate (first century BC-first century AD). He's working on the imperial power, the Roman aristocracy and the government of the Roman Empire.
 EOT;
 
-    $description2_expected=<<<EOT
+    $text_expected=<<<EOT
 Fr&#233;d&#233;ric Hurlet is professor of History of the Roman World, University Paris Ouest Nanterre La D&#233;fense. He is Director of the Maison de l&#8217;Arch&#233;ologie et de l&#8217;Ethnologie, Ren&#233;-Ginouv&#232;s. He published a few books and papers on the transition between Republic and Principate (first century BC-first century AD). He's working on the imperial power, the Roman aristocracy and the government of the Roman Empire.
 EOT;
    
-    $result = utf2html($description2);
-    $assert->equal($description2_expected, $result, "\n[$description2_expected]\n[$result]\n");
+    $result = utf2html($text);
+    $assert->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
     
     // Christel Muller example.
-    $summary=<<<EOT
+    $text=<<<EOT
 Christel Müller, Université Paris-Ouest Nanterre La Défense, will present "The 'common emporion of Greece': groups and subgroups of foreigners in Late Hellenistic Delos' to the Pre-Modern Mediterranean" seminar on Monday, April 20th.
 EOT;
 
-    $summary_expected=<<<EOT
+    $text_expected=<<<EOT
 Christel M&#252;ller, Universit&#233; Paris-Ouest Nanterre La D&#233;fense, will present "The 'common emporion of Greece': groups and subgroups of foreigners in Late Hellenistic Delos' to the Pre-Modern Mediterranean" seminar on Monday, April 20th.
 EOT;
-    $result = utf2html($summary);
-    $assert->equal($summary_expected, $result, "\n[$summary_expected]\n[$result]\n");
+    $result = utf2html($text);
+    $assert->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
     
 
-    $description=<<<EOT
+    $text=<<<EOT
 Professor Müller's paper aims at observing the changes that have affected, during the Late Hellenistic period (c. 150-50 BCE), the exceptional Delian 'social laboratory', an Athenian colony at this time according to Pierre Roussel: these changes concern the composition, but also the perception and self presentation of the diverse groups of foreigners that had their residence on the island (Athenians, Romans/Italians, other 'Greeks'...). The main documents here are the inscriptions, first the decrees of the so-called Athenian cleruchy, then later on the numerous dedications made by these groups collectively.
 EOT;
 
-    $description_expected=<<<EOT
+    $text_expected=<<<EOT
 Professor M&#252;ller's paper aims at observing the changes that have affected, during the Late Hellenistic period (c. 150-50 BCE), the exceptional Delian 'social laboratory', an Athenian colony at this time according to Pierre Roussel: these changes concern the composition, but also the perception and self presentation of the diverse groups of foreigners that had their residence on the island (Athenians, Romans/Italians, other 'Greeks'...). The main documents here are the inscriptions, first the decrees of the so-called Athenian cleruchy, then later on the numerous dedications made by these groups collectively.
 EOT;
 
-    $result = utf2html($description);
-    $assert->equal($description_expected, $result, "\n[$description_expected]\n[$result]\n");
+    $result = utf2html($text);
+    $assert->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
     
 
-    $description2=<<<EOT
+    $text=<<<EOT
 Christel Müller is Professor of Greek History at the University of Paris Ouest Nanterre La Défense. Her main subjects of interest are: society and institutions of Hellenistic Greece, Boeotian epigraphy, the economy and society of colonisation (Black Sea). She is the author of D'Olbia à Tanaïs: Territoires et réseaux d'échanges dans la Mer Noire septentrionale aux époques classique et hellénistique (2010), the co-author of Archéologie historique de la Gréce antique, 3rd ed. (2014) and the co-editor of Les Italiens dans le monde grec (2002), Identités et cultures dans le monde méditerranéen antique (2002), Citoyenneté et participation à la basse époque hellénistique (2005) and Identité ethnique et culture matérielle dans le monde grec (2014).
 EOT;
 
-    $description2_expected=<<<EOT
+    $text_expected=<<<EOT
 Christel M&#252;ller is Professor of Greek History at the University of Paris Ouest Nanterre La D&#233;fense. Her main subjects of interest are: society and institutions of Hellenistic Greece, Boeotian epigraphy, the economy and society of colonisation (Black Sea). She is the author of D'Olbia &#224; Tana&#239;s: Territoires et r&#233;seaux d'&#233;changes dans la Mer Noire septentrionale aux &#233;poques classique et hell&#233;nistique (2010), the co-author of Arch&#233;ologie historique de la Gr&#233;ce antique, 3rd ed. (2014) and the co-editor of Les Italiens dans le monde grec (2002), Identit&#233;s et cultures dans le monde m&#233;diterran&#233;en antique (2002), Citoyennet&#233; et participation &#224; la basse &#233;poque hell&#233;nistique (2005) and Identit&#233; ethnique et culture mat&#233;rielle dans le monde grec (2014).
 EOT;
 
-    $result = utf2html($description2);
-    $assert->equal($description2_expected, $result, "\n[$description2_expected]\n[$result]\n");
+    $result = utf2html($text);
+    $assert->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
+
+  // NOTE: The micron should not cause the text to be changed. This test confirms the text is preserved by utf2html()
+    $text=<<<EOT
+Standard historiography of the church in Kyoto during the Christian Century (1549-1650) does not mention the remarkable leader Naito Julia. Julia, who was once the abbess of Jōdo convent, became a successful evangelist for the Jesuit mission in Japan. She founded and led a society of Christian women catechists, whom people called the Miyaco no bicuni [bikuni] ("nuns of Kyoto"). Between 1600 and 1612, Julia and her nuns preached, engaged in religious disputations, catechized, baptized hundreds of persons, and provided pastoral care for the new converts. Although none of the women's writings survive to tell us about their ideas and experiences, Fucan Fabian's 1607 Myōtei mondō suggests how they may have understood differences between Buddhism, Shinto, Confucianism, Taoism and Christianity.
+EOT;
+
+    $text_expected=<<<EOT
+Standard historiography of the church in Kyoto during the Christian Century (1549-1650) does not mention the remarkable leader Naito Julia. Julia, who was once the abbess of Jōdo convent, became a successful evangelist for the Jesuit mission in Japan. She founded and led a society of Christian women catechists, whom people called the Miyaco no bicuni [bikuni] ("nuns of Kyoto"). Between 1600 and 1612, Julia and her nuns preached, engaged in religious disputations, catechized, baptized hundreds of persons, and provided pastoral care for the new converts. Although none of the women's writings survive to tell us about their ideas and experiences, Fucan Fabian's 1607 Myōtei mondō suggests how they may have understood differences between Buddhism, Shinto, Confucianism, Taoism and Christianity.
+EOT;
+
+    $result = utf2html($text);
+    $assert->equal($text_expected, $result, "\n[$text_expected]\n[$result]\n");
     
     return "OK";
 }
