@@ -24,6 +24,17 @@ This might look something like -
 	// the rest of the old should now work safer.
 ```
 
+If you need to validated an uploaded filename you might do something like -
+
+```PHP
+    <?php
+    // Get the filename from the $_FILE assoc array.
+    $safeFilename = $_FILE['myupload']['tmp_name'];
+    if ($safeFilename === false) {
+        die('Cannot upload this file.');
+    }
+```
+
 # Using in new projects
 
 When using safely in new projects you should provide an explicit validation
