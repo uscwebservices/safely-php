@@ -105,6 +105,18 @@ function isValidUrl($s, $protocols = null) {
 }
 
 /**
+ * isValidFilename - check to see if the string conforms to a valid filename (alaphnumeric plus .,_,-)
+ * @param $s - string to check
+ * @return true if valid filename false otherwise.
+ */
+function isValidFilename($s) {
+    if (!preg_match('/^(?:[a-z0-9_-]|\/|\.(?!\.))+$/iD', $s) || mb_strlen($s, "UTF-8") >= 250) {
+        return false;
+    }
+    return true;
+}
+
+/**
  * isValidEmail - simple check for probably valid email address.
  * @param $s - the string to check
  * @return the validated string or false if it appears not to be an email address.
@@ -331,6 +343,11 @@ function makeAs ($value, $format, $verbose = false) {
             return $value;
         }
         return false;
+    case 'filename':
+        if (isValidFilename($value) === true) {
+            return $value;
+        }
+        return false;
     }
     // We haven't found one of our explicit formats so...
     $preg_result = preg_match(">" . '^' . 
@@ -445,5 +462,15 @@ function safeJSON($json_string, $validation_map, $verbose = false) {
         }
     }
     return $results;
+}
+
+/**
+ * safeFilename() - validate the string against being a safe filename like when you use $_FILE.
+ * @param $filename (required) name to be validated
+ * @param $verbose (optoinal) - log regexp makeAs results. (default is false)
+ * @return the santized string or false
+ */
+function safeFilename($filename, $verbose = false) {
+    return makeAs($filename, "filename", $verbose);
 }
 ?>

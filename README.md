@@ -18,8 +18,8 @@ This might look something like -
 	<?php
 	// Added safely, RSD 2012-07-25
 	require("/www/assets/safely-php/safely.php");
-	$_GET = safeGET();
-	$_POST = safePOST();
+	$get = safeGET();   // e.g. originally $_GET
+	$post = safePOST(); // e.g. originally $_POST
 	
 	// the rest of the old should now work safer.
 ```

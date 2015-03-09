@@ -17,6 +17,17 @@ $_SERVER = array();
 
 include('safely.php');
 
+function testIsFilename () {
+    global $assert;
+
+    $assert->ok(isValidFilename("three.txt"), "/one/two/three.txt should be valid");
+    $assert->ok(isValidFilename("/one/two/three.txt"), "/one/two/three.txt should be valid");
+    $assert->ok(!isValidFilename("../etc/passwd"), "../etc/passwd should not be accepted as a valid filename");
+    $assert->ok(!isValidFilename("../etc/passwdpoiweopirepoewripewroperiwporpweoiewrpoiwerpoierwpoirepwoweripoewpoewrpoewripeowripewroierwpoierwpopeowirpoewrirewpoweripewroipeworiewproierwpierwpoierwpoirwepoierwpoiwerpoewirpewirperwipoerirepoierpowiepoweierpoiewrpoewrirewp"), "../etc/passwd should not be accepted as a valid filename");
+
+    return "OK";
+}
+
 function testSupportFunctions () {
 	global $assert;
 	
@@ -669,6 +680,7 @@ $assert->ok(function_exists("safePOST"), "Should have a safePOST function define
 $assert->ok(function_exists("safeSERVER"), "Should have a safeSERVER function defined.");
 $assert->ok(function_exists("safeJSON"), "Should have a safeJSON function defined.");
 
+echo "\tTesting testIsFilename: " . testIsFilename() . PHP_EOL;
 echo "\tTesting testUTF2HTML: " . testUTF2HTML() . PHP_EOL;
 echo "\tTesting testAttributeCleaning: " . testAttributeCleaning() . PHP_EOL;
 echo "\tTesting testHREFCleaning: " . testHREFCleaning() . PHP_EOL;
