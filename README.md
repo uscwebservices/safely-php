@@ -28,10 +28,10 @@ If you need to validated an uploaded filename you might do something like -
 
 ```PHP
     <?php
-    // Get the filename from the $_FILE assoc array.
-    $safeFilename = $_FILE['myupload']['tmp_name'];
+    // Get the filename from the $_FILES assoc array.
+    $safeFilename = $_FILES['myupload']['name'];
     if ($safeFilename === false) {
-        die('Cannot upload this file.');
+        die('Not a valid filename.');
     }
 ```
 
