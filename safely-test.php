@@ -11,10 +11,12 @@ if (php_sapi_name() !== "cli") {
 error_reporting(E_ALL | E_STRICT);
 @date_default_timezone_set(date_default_timezone_get());
 
+echo 'Requiring assert.php' . PHP_EOL;
 require('assert.php');
 $_POST = array();
 $_SERVER = array();
 
+echo 'Loading safely.php' . PHP_EOL;
 include('safely.php');
 
 function testIsFilename () {
@@ -588,21 +590,21 @@ BAD_JSON;
 function testHREFCleaning() {
    global $assert;
 
-   $validation_map = [
+   $validation_map = array(
         "title" => "HTML"
-       ];
-   $_POST = [
+       );
+   $_POST = array(
         "title" => 'Injection <a href="javascript:alert(\"Something Bad\")">Test</a>.'
-       ];
-   $expected_result = [
+       );
+   $expected_result = array(
         "title" => 'Injection <a >Test</a>.'
-       ];
+       );
    $result = safePOST($validation_map);
    $assert->equal($result['title'], $expected_result['title'], "Should have a clean href in title: ". $result['title']);
 
-   $_POST = [
+   $_POST = array(
         "title" => 'Injection <a href=' . "'" . 'javascript:alert("Something Bad")' . "'" . '>Test</a>.'
-       ];
+       );
    $result = safePOST($validation_map);
    $assert->equal($result['title'], $expected_result['title'], "Should have a clean href in title: ". $result['title']);
    return "OK";

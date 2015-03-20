@@ -221,7 +221,7 @@ function fix_html_quotes($s) {
         } else if ($a[$i] === '<') {
             $inCData = false;
         } else if ($inCData === true) {
-            $a[$i] = str_replace(['"', "'"], ['&quot;', '&apos;'], $a[$i]);
+            $a[$i] = str_replace(array('"', "'"), array('&quot;', '&apos;'), $a[$i]);
             //$a[$i] = htmlentities($a[$i], ENT_QUOTES | ENT_HTML5);
         }
     }
@@ -243,8 +243,8 @@ function escape($value) {
         $value = mb_convert_encoding($value, "UTF-8", $from_encoding);
     }
 
-    $search  = [ "\\",   "\x00", "\n",  "\r",  "'",  '"',  "\x1a" ];
-    $replace = [ "\\\\", "\\0",  "\\n", "\\r", "\'", '\"', "\\Z" ];
+    $search  = array( "\\",   "\x00", "\n",  "\r",  "'",  '"',  "\x1a" );
+    $replace = array( "\\\\", "\\0",  "\\n", "\\r", "\'", '\"', "\\Z" );
 
     return str_replace($search, $replace, $value);
 }
