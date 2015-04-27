@@ -294,7 +294,9 @@ function makeAs ($value, $format, $verbose = false) {
         break;
     case 'boolean':
         if ($value === 'true' || 
-                $value === '1') {
+            $value === '1'    ||
+            $value === 'on'   ||
+            $value === 'yes' ) {
             return true;
         }
         return false;
