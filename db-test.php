@@ -3,7 +3,7 @@
  * tests for db.php.
  */
 if (php_sapi_name() !== "cli") {
-        echo "Must be run from the command line." . PHP_EOL;
+        echo "Must be run from the command line." , PHP_EOL;
         exit(1);
 }
 error_reporting(E_ALL | E_STRICT);
@@ -26,10 +26,10 @@ function testLogOutput ($MYSQL_CONNECTION_URL) {
     $db = new Db($MYSQL_CONNECTION_URL);
     $db->setLog("echo");
     $db->logIt("This is my log message via echo", true);
-    echo 'Should have seen a line logged with "echo" with <pre> elements.' . PHP_EOL;
+    echo 'Should have seen a line logged with "echo" with <pre> elements.' , PHP_EOL;
     $db->setLog("error_log");
     $db->logIt("This is my log message via error_log()", true);
-    echo 'Should have seen a line logged to error_log().' . PHP_EOL;
+    echo 'Should have seen a line logged to error_log().' , PHP_EOL;
     return "Requires manual visual check";
 }
 
@@ -219,7 +219,7 @@ function testEmbeddedQuestionMarks($MYSQL_CONNECTION_URL) {
 }
 
 
-echo 'Starting [' . $argv[0] . '] ...' . PHP_EOL;
+echo 'Starting [' , $argv[0] , '] ...' , PHP_EOL;
 if (version_compare(phpversion(), '5.5.0', '>=') === true) {
     echo "\tmysqli_* driver test\n";
     // Test mysqli_* driver
@@ -240,5 +240,5 @@ if (version_compare(phpversion(), '5.3.0', '>=') === true) {
     die("ERROR: this library assumes at least version 5.3.x of PHP.");
 }
 testLogOutput($MYSQL_CONNECTION_URL);
-echo 'Success!' . PHP_EOL;
+echo 'Success!' , PHP_EOL;
 ?>

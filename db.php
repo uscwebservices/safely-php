@@ -54,7 +54,7 @@ class Db {
             if ($this->log_output === 'error_log') {
                 error_log($msg);
             } else {
-                echo '<pre>Log: ' . $msg . '</pre>' . PHP_EOL;
+                echo '<pre>Log: ' , $msg , '</pre>' , PHP_EOL;
             }
         }
     }
