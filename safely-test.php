@@ -5,18 +5,18 @@
  */
 define("SAFELY_ALLOW_UNSAFE", true);
 if (php_sapi_name() !== "cli") {
-	echo "Must be run from the command line." . PHP_EOL;
+	echo "Must be run from the command line." , PHP_EOL;
 	exit(1);
 }
 error_reporting(E_ALL | E_STRICT);
 @date_default_timezone_set(date_default_timezone_get());
 
-echo 'Requiring assert.php' . PHP_EOL;
+echo 'Requiring assert.php' , PHP_EOL;
 require('assert.php');
 $_POST = array();
 $_SERVER = array();
 
-echo 'Loading safely.php' . PHP_EOL;
+echo 'Loading safely.php' , PHP_EOL;
 include('safely.php');
 
 function testIsFilename () {
@@ -674,7 +674,7 @@ function testSaneUnicodeSupportPCRE() {
     return "OK";
 }
 
-echo "Starting [" . $argv[0] . "]..." . PHP_EOL;
+echo "Starting [" , $argv[0] , "]..." , PHP_EOL;
 
 $assert->ok(function_exists("defaultValidationMap"), "Should have a defaultValidationMap function defined.");
 $assert->ok(function_exists("safeGET"), "Should have a safeGET function defined.");
@@ -682,25 +682,25 @@ $assert->ok(function_exists("safePOST"), "Should have a safePOST function define
 $assert->ok(function_exists("safeSERVER"), "Should have a safeSERVER function defined.");
 $assert->ok(function_exists("safeJSON"), "Should have a safeJSON function defined.");
 
-echo "\tTesting testIsFilename: " . testIsFilename() . PHP_EOL;
-echo "\tTesting testUTF2HTML: " . testUTF2HTML() . PHP_EOL;
-echo "\tTesting testAttributeCleaning: " . testAttributeCleaning() . PHP_EOL;
-echo "\tTesting testHREFCleaning: " . testHREFCleaning() . PHP_EOL;
-echo "\tTesting testSaneUnicodeSupportPCRE: " . testSaneUnicodeSupportPCRE() . PHP_EOL;
-echo "\tTesting testCleanScriptElements: " . testCleanScriptElements() . PHP_EOL;
-echo "\tTesting testImprovedURLHandling: " . testImprovedURLHandling() . PHP_EOL;
-echo "\tTesting testFixHTMLQuotes: " . testFixHTMLQuotes() . PHP_EOL;
-echo "\tTesting testHTMLQuoteHandling: " . testHTMLQuoteHandling() . PHP_EOL;
-echo "\tTesting testSelectMultiple: " . testSelectMultiple() . PHP_EOL;
-echo "\tTesting testMakeAs: " . testMakeAs() . PHP_EOL;
-echo "\tTesting support functions: " . testSupportFunctions() . PHP_EOL;
-echo "\tTesting get processing: " . testGETProcessing() . PHP_EOL;
-echo "\tTesting post processing: " . testPOSTProcessing() . PHP_EOL;
-echo "\tTesting server processing: " . testSERVERProcessing() . PHP_EOL;
-echo "\tTesting safeStrToTime process: " . testSafeStrToTime() . PHP_EOL;
-echo "\tTesting Varname Lists process: " . testVarnameLists() . PHP_EOL;
-echo "\tTesting PRCE expressions process: " . testPRCEExpressions() . PHP_EOL;
-echo "\tTesting testSafeJSON: " . testSafeJSON() . PHP_EOL;
-echo "\tTesting testAnchorElementSantization: " . testAnchorElementSantization() . PHP_EOL;
-echo "Success!" . PHP_EOL;
+echo "\tTesting testIsFilename: " , testIsFilename() , PHP_EOL;
+echo "\tTesting testUTF2HTML: " , testUTF2HTML() , PHP_EOL;
+echo "\tTesting testAttributeCleaning: " , testAttributeCleaning() , PHP_EOL;
+echo "\tTesting testHREFCleaning: " , testHREFCleaning() , PHP_EOL;
+echo "\tTesting testSaneUnicodeSupportPCRE: " , testSaneUnicodeSupportPCRE() , PHP_EOL;
+echo "\tTesting testCleanScriptElements: " , testCleanScriptElements() , PHP_EOL;
+echo "\tTesting testImprovedURLHandling: " , testImprovedURLHandling() , PHP_EOL;
+echo "\tTesting testFixHTMLQuotes: " , testFixHTMLQuotes() , PHP_EOL;
+echo "\tTesting testHTMLQuoteHandling: " , testHTMLQuoteHandling() , PHP_EOL;
+echo "\tTesting testSelectMultiple: " , testSelectMultiple() , PHP_EOL;
+echo "\tTesting testMakeAs: " , testMakeAs() , PHP_EOL;
+echo "\tTesting support functions: " , testSupportFunctions() , PHP_EOL;
+echo "\tTesting get processing: " , testGETProcessing() , PHP_EOL;
+echo "\tTesting post processing: " , testPOSTProcessing() , PHP_EOL;
+echo "\tTesting server processing: " , testSERVERProcessing() , PHP_EOL;
+echo "\tTesting safeStrToTime process: " , testSafeStrToTime() , PHP_EOL;
+echo "\tTesting Varname Lists process: " , testVarnameLists() , PHP_EOL;
+echo "\tTesting PRCE expressions process: " , testPRCEExpressions() , PHP_EOL;
+echo "\tTesting testSafeJSON: " , testSafeJSON() , PHP_EOL;
+echo "\tTesting testAnchorElementSantization: " , testAnchorElementSantization() , PHP_EOL;
+echo "Success!" , PHP_EOL;
 ?>
